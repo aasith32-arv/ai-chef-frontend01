@@ -1,0 +1,152 @@
+{
+  "rice": {
+    "en": "Rice",
+    "ta": "அரிசி",
+    "si": "සහල්"
+  },
+  "chicken": {
+    "en": "Chicken",
+    "ta": "கோழி",
+    "si": "කුකුල් මස්"
+  },
+  "egg": {
+    "en": "Egg",
+    "ta": "முட்டை",
+    "si": "බිත්තර"
+  },
+  "onion": {
+    "en": "Onion",
+    "ta": "வெங்காயம்",
+    "si": "ලූනු"
+  },
+  "tomato": {
+    "en": "Tomato",
+    "ta": "தக்காளி",
+    "si": "තක්කාලි"
+  },
+  "garlic": {
+    "en": "Garlic",
+    "ta": "பூண்டு",
+    "si": "සුදු ලූනු"
+  },
+  "ginger": {
+    "en": "Ginger",
+    "ta": "இஞ்சி",
+    "si": "ඉඟුරු"
+  },
+  "oil": {
+    "en": "Oil",
+    "ta": "எண்ணெய்",
+    "si": "තෙල්"
+  },
+  "salt": {
+    "en": "Salt",
+    "ta": "உப்பு",
+    "si": "ලුණු"
+  },
+  "carrot": {
+    "en": "Carrot",
+    "ta": "கேரட்",
+    "si": "කැරට්"
+  },
+  "beans": {
+    "en": "Beans",
+    "ta": "பீன்ஸ்",
+    "si": "බෝංචි"
+  },
+  "capsicum": {
+    "en": "Capsicum",
+    "ta": "குடை மிளகாய்",
+    "si": "මාළු මිරිස්"
+  },
+  "coconut milk": {
+    "en": "Coconut Milk",
+    "ta": "தேங்காய் பால்",
+    "si": "පොල් කිරි"
+  },
+  "yogurt": {
+    "en": "Yogurt",
+    "ta": "தயிர்",
+    "si": "යෝගට්"
+  },
+  "fish": {
+    "en": "Fish",
+    "ta": "மீன்",
+    "si": "මාළු"
+  },
+  "dhal": {
+    "en": "Dhal",
+    "ta": "பருப்பு",
+    "si": "පරිප්පු"
+  },
+  "potato": {
+    "en": "Potato",
+    "ta": "உருளைக்கிழங்கு",
+    "si": "අල"
+  },
+  "butter": {
+    "en": "Butter",
+    "ta": "வெண்ணெய்",
+    "si": "බටර්"
+  },
+  "flour": {
+    "en": "Flour",
+    "ta": "மாவு",
+    "si": "පිටි"
+  },
+  "soy sauce": {
+    "en": "Soy Sauce",
+    "ta": "சோயா சாஸ்",
+    "si": "සෝයා සෝස්"
+  },
+  "biryani masala": {
+    "en": "Biryani Masala",
+    "ta": "பிரியாணி மசாலா",
+    "si": "බිරියානි මසාලා"
+  },
+  "ginger garlic paste": {
+    "en": "Ginger Garlic Paste",
+    "ta": "இஞ்சி பூண்டு விழுது",
+    "si": "ඉඟුරු සුදු ලූනු පේස්ට්"
+  },
+  "g": {
+    "en": "g",
+    "ta": "கி",
+    "si": "g"
+  },
+  "kg": {
+    "en": "kg",
+    "ta": "கிகி",
+    "si": "kg"
+  },
+  "ml": {
+    "en": "ml",
+    "ta": "மிலி",
+    "si": "ml"
+  },
+  "l": {
+    "en": "L",
+    "ta": "லி",
+    "si": "L"
+  },
+  "tsp": {
+    "en": "tsp",
+    "ta": "தேக்கரண்டி",
+    "si": "tsp"
+  },
+  "tbsp": {
+    "en": "tbsp",
+    "ta": "மேசைக்கரண்டி",
+    "si": "tbsp"
+  },
+  "piece": {
+    "en": "piece",
+    "ta": "துண்டு",
+    "si": "කෑල්ල"
+  },
+  "pieces": {
+    "en": "pieces",
+    "ta": "துண்டுகள்",
+    "si": "කෑලි"
+  }
+}
