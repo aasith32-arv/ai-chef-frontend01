@@ -4,6 +4,7 @@ import { translate } from "@/lib/i18n/i18n";
 describe("translate", () => {
   it("returns English string for known key", () => {
     expect(translate("en", "nav.home")).toBe("Home");
+    expect(translate("en", "nav.shopping")).toBe("Shop");
   });
 
   it("returns Tamil translation when available", () => {
