@@ -12,8 +12,10 @@ import { SaveButton } from "@/components/save-button";
 import { GuestStepper } from "@/components/recipe/guest-stepper";
 import { NutritionStrip } from "@/components/recipe/nutrition-strip";
 import { CookingTimer } from "@/components/recipe/cooking-timer";
+import { CookingIntelligencePanel } from "@/components/cooking-intelligence/cooking-intelligence-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { scaleIngredientList } from "@/lib/ingredient-calculator";
 import { localizeIngredientList } from "@/lib/i18n/localize";
 import { LOCALES } from "@/lib/i18n/types";
@@ -182,16 +184,31 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <IngredientList
-            ingredients={displayIngredients}
-            title={t("recipe.ingredients")}
-          />
-          <StepsAccordion steps={translatedSteps} />
-        </div>
-        <CookingTimer defaultMinutes={20 + (recipe.id % 5) * 5} />
-      </div>
+      <Tabs defaultValue="cooking-plan" className="space-y-5">
+        <TabsList className="h-11 w-full max-w-md rounded-full p-1">
+          <TabsTrigger value="cooking-plan" className="rounded-full">
+            Cooking Plan
+          </TabsTrigger>
+          <TabsTrigger value="recipe-basics" className="rounded-full">
+            Ingredients &amp; Steps
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="cooking-plan">
+          <CookingIntelligencePanel recipeId={recipe.id} servings={servings} />
+        </TabsContent>
+        <TabsContent value="recipe-basics">
+          <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <IngredientList
+                ingredients={displayIngredients}
+                title={t("recipe.ingredients")}
+              />
+              <StepsAccordion steps={translatedSteps} />
+            </div>
+            <CookingTimer defaultMinutes={20 + (recipe.id % 5) * 5} />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

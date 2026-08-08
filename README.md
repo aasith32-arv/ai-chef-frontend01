@@ -2,6 +2,22 @@
 
 Next.js client for **smart-chef-api**.
 
+## AI Cooking Intelligence
+
+Recipe detail pages now include a Cooking Plan experience alongside the original ingredients and
+steps. The plan provides:
+
+- personalized servings, spice, oil, salt, dietary, cookware, and texture controls;
+- a stage timeline, temperature/heat guidance, and visual doneness estimates;
+- texture, aroma, food transformation, warnings, and “Why this step?” explanations;
+- Beginner Mode and optional Cooking Science details;
+- ingredient substitutions and conservative troubleshooting;
+- a mobile-friendly Cooking Mode with manual progression and independent start, pause, resume,
+  reset, extend, and completion timer states.
+
+The frontend uses the existing `NEXT_PUBLIC_API_URL`. No new frontend environment variable is
+required.
+
 ## Run
 
 1. Start API:

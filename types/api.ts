@@ -120,3 +120,134 @@ export type AISuggestResult = {
   suggestions: AISuggestion[];
   source: string;
 };
+
+export type CookingPreferences = {
+  servings: number;
+  spice_level: "mild" | "medium" | "hot";
+  oil_level: "low" | "standard";
+  salt_preference: "low" | "standard";
+  dietary_restrictions: string[];
+  cooking_method: string;
+  cookware: string;
+  available_ingredients: string[];
+  preferred_texture: string;
+  beginner_mode: boolean;
+  science_mode: boolean;
+};
+
+export type CookingIngredient = {
+  id: number;
+  name: string;
+  quantity: number;
+  unit: string;
+  display: string;
+  adjusted: boolean;
+};
+
+export type CookingStepIngredient = CookingIngredient & {
+  addition_order: number;
+  why_now: string;
+  contribution: string;
+  added_too_early: string;
+  added_too_late: string;
+  expected_transformation: string;
+  visual_cue: string;
+  aroma_cue: string;
+  texture_cue: string;
+};
+
+export type CookingStepData = {
+  id: string | number;
+  step_number: number;
+  title: string;
+  instruction: string;
+  beginner_instruction: string;
+  stage: string;
+  timing: {
+    minimum_minutes: number;
+    maximum_minutes: number;
+    estimated_minutes: number;
+    source: string;
+  };
+  timeline: { start_minute: number; end_minute: number };
+  temperature: {
+    heat_level: string;
+    minimum_c: number | null;
+    maximum_c: number | null;
+    reason: string;
+    context: string;
+    food_safety: string | null;
+  };
+  ingredients: CookingStepIngredient[];
+  doneness: {
+    visual_cue: string;
+    colour_stage: string;
+    colour_progress: number;
+    texture_cue: string;
+    aroma_cue: string;
+  };
+  transformation: {
+    before: string;
+    process: string;
+    after: string;
+    science?: string;
+  };
+  purpose: string;
+  benefits: string[];
+  warnings: string[];
+  common_mistakes: Array<{ problem: string; correction: string }>;
+  correction: string;
+  scientific_explanation: string;
+  critical: boolean;
+  source: string;
+  science_visible: boolean;
+};
+
+export type CookingPlanData = {
+  recipe: {
+    id: number;
+    name: string;
+    category: string;
+    description: string | null;
+    base_servings: number;
+  };
+  servings: number;
+  ingredients: CookingIngredient[];
+  steps: CookingStepData[];
+  summary: {
+    estimated_minutes: number;
+    difficulty: string;
+    heat_profile: string;
+    stages: number;
+    ingredients: number;
+    critical_steps: number;
+  };
+  personalization: CookingPreferences;
+  personalization_notes: Array<{ level: "warning" | "info"; message: string }>;
+  source: "stored" | "rule-based";
+  estimate_notice: string;
+  safety_source: string;
+};
+
+export type TroubleshootingResult = {
+  problem: string;
+  probable_cause: string;
+  immediate_action: string;
+  recovery_option: string;
+  prevention_tip: string;
+  disclaimer: string;
+  source: string;
+  supported_problems: string[];
+};
+
+export type SubstitutionResult = {
+  ingredient: string;
+  options: Array<{
+    substitution: string;
+    why_it_works: string;
+    how_much: string;
+    what_changes: string;
+  }>;
+  context_warning: string;
+  source: string;
+};
