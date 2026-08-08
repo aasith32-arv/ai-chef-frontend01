@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveApiBaseUrl } from "@/lib/api-client";
+import { resolveApiBaseUrl, resolveRuntimeApiBaseUrl } from "@/lib/api-client";
 
 describe("resolveApiBaseUrl", () => {
   it("uses the default API base when no override is provided", () => {
@@ -22,5 +22,20 @@ describe("resolveApiBaseUrl", () => {
     expect(resolveApiBaseUrl("http://localhost:5000/api")).toBe(
       "http://localhost:5000/api/v1"
     );
+  });
+
+  it("uses the same-origin Vercel proxy in production", () => {
+    expect(
+      resolveRuntimeApiBaseUrl(
+        "production",
+        "https://example-api.up.railway.app/api/v1"
+      )
+    ).toBe("/api/backend/v1");
+  });
+
+  it("uses the configured API directly during local development", () => {
+    expect(
+      resolveRuntimeApiBaseUrl("development", "http://localhost:5000/api/v1")
+    ).toBe("http://localhost:5000/api/v1");
   });
 });

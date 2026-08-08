@@ -19,8 +19,18 @@ export function resolveApiBaseUrl(value?: string): string {
   return normalizeApiBaseUrl(value);
 }
 
-/** Prefer localhost so FE (localhost:3000) and API share SameSite=Lax cookies. */
-export const API_BASE_URL = resolveApiBaseUrl(process.env.NEXT_PUBLIC_API_URL);
+export function resolveRuntimeApiBaseUrl(
+  environment = process.env.NODE_ENV,
+  configured = process.env.NEXT_PUBLIC_API_URL
+): string {
+  // Production requests stay on the Vercel origin. next.config.ts proxies this
+  // private path to Railway so JWT and CSRF cookies remain first-party.
+  return environment === "production"
+    ? "/api/backend/v1"
+    : resolveApiBaseUrl(configured);
+}
+
+export const API_BASE_URL = resolveRuntimeApiBaseUrl();
 
 const LEGACY_TOKEN_KEY = "ai-chef-token";
 const LEGACY_USER_KEY = "ai-chef-user";

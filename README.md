@@ -48,6 +48,20 @@ npm run dev
 Pricing is available at `/pricing`. Checkout and billing-portal sessions are created by the Flask
 API, so Stripe secret keys must never be added to the frontend environment.
 
+### Vercel + Railway authentication
+
+Production browser requests use the same-origin `/api/backend/v1/*` proxy to prevent third-party
+cookie blocking between Vercel and Railway. Configure these Vercel environment variables and
+redeploy:
+
+```env
+BACKEND_API_URL=https://your-api.up.railway.app
+NEXT_PUBLIC_API_URL=https://your-api.up.railway.app/api/v1
+```
+
+`BACKEND_API_URL` is server-only. The public URL remains useful for local development and build-time
+fallback, but production browser requests are always sent through the Vercel proxy.
+
 Open [http://localhost:3000](http://localhost:3000).
 
 ## Flow
