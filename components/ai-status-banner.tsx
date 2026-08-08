@@ -15,7 +15,7 @@ export function AIStatusBanner() {
         if (active) {
           setStatus({
             ...data,
-            // API responded, so backend is reachable even if OpenAI key is missing
+            // API responded, so the backend is reachable even if no provider is configured.
             reachable: data.reachable ?? true,
           });
         }
@@ -24,6 +24,7 @@ export function AIStatusBanner() {
         if (active) {
           setStatus({
             configured: false,
+            provider: "none",
             model: "gpt-4o-mini",
             message:
               "Cannot reach smart-chef-api. Start it with: python run.py (port 5000).",
@@ -51,34 +52,41 @@ export function AIStatusBanner() {
   if (!status) return null;
 
   const apiUp = status.reachable !== false;
-  const openaiOk = Boolean(status.configured) && apiUp;
+  const providerOk = Boolean(status.configured) && apiUp;
+  const providerName =
+    status.provider === "gemini"
+      ? "Gemini"
+      : status.provider === "openai"
+        ? "OpenAI"
+        : "AI provider";
 
   return (
     <div
       className={
-        openaiOk
+        providerOk
           ? "mb-4 flex items-start gap-2 rounded-2xl border border-primary/25 bg-primary/5 px-3 py-2.5 text-sm shadow-sm"
           : "mb-4 flex items-start gap-2 rounded-2xl border border-warning/40 bg-warning/10 px-3 py-2.5 text-sm shadow-sm"
       }
     >
-      {openaiOk ? (
+      {providerOk ? (
         <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
       ) : (
         <AlertTriangle className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
       )}
       <div>
         <p className="font-medium">
-          {openaiOk
-            ? "API + OpenAI connected"
+          {providerOk
+            ? `API + ${providerName} connected`
             : apiUp
-              ? "API connected · OpenAI key missing"
+              ? "API connected · AI provider key missing"
               : "API not reachable"}
         </p>
         <p className="mt-0.5 text-muted-foreground">{status.message}</p>
-        {apiUp && !openaiOk && (
+        {apiUp && !providerOk && (
           <p className="mt-1 text-muted-foreground">
-            Local recipes still work. For AI plans/suggestions, set{" "}
-            <code className="rounded bg-muted px-1">OPENAI_API_KEY=sk-...</code> in{" "}
+            Local recipes still work. Set{" "}
+            <code className="rounded bg-muted px-1">AI_PROVIDER</code> and its matching
+            API key in{" "}
             <code className="rounded bg-muted px-1">smart-chef-api/.env</code>, then
             restart <code className="rounded bg-muted px-1">python run.py</code>.
           </p>

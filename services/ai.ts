@@ -14,6 +14,7 @@ export type TranslatedRecipe = {
 
 export type AIStatus = {
   configured: boolean;
+  provider: "openai" | "gemini" | "none";
   model: string;
   message: string;
   reachable?: boolean;
