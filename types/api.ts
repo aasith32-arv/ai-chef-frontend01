@@ -19,6 +19,26 @@ export type User = {
   updated_at: string;
 };
 
+export type BillingSubscription = {
+  status: string;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+};
+
+export type AdvertisingOrder = {
+  id: number;
+  amount: number;
+  currency: string;
+  payment_status: string;
+  review_status: string;
+  created_at: string;
+};
+
+export type BillingStatus = {
+  subscription: BillingSubscription | null;
+  advertising_orders: AdvertisingOrder[];
+};
+
 export type Ingredient = {
   id: number;
   name: string;

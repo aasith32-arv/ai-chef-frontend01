@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Calculator,
+  CreditCard,
   Heart,
   Home,
   Menu,
@@ -33,6 +34,7 @@ const NAV = [
   { href: "/", labelKey: "nav.home", fallback: "Home", icon: Home },
   { href: "/calculate", labelKey: "nav.calculate", fallback: "Calculate", icon: Calculator },
   { href: "/suggest", labelKey: "nav.suggest", fallback: "Suggest", icon: Wand2 },
+  { href: "/pricing", labelKey: "nav.pricing", fallback: "Pricing", icon: CreditCard },
   { href: "/shopping-list", labelKey: "nav.shopping", fallback: "Shop", icon: ShoppingCart },
   { href: "/saved", labelKey: "nav.saved", fallback: "Saved", icon: Heart },
 ] as const;

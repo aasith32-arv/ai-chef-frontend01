@@ -45,6 +45,9 @@ cd ../frontend
 npm run dev
 ```
 
+Pricing is available at `/pricing`. Checkout and billing-portal sessions are created by the Flask
+API, so Stripe secret keys must never be added to the frontend environment.
+
 Open [http://localhost:3000](http://localhost:3000).
 
 ## Flow
