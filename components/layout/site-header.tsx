@@ -47,14 +47,16 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/80 backdrop-blur-xl">
       <div className="container-premium flex h-16 items-center justify-between gap-3 lg:h-[4.25rem]">
         <Link href="/" className="group flex items-center gap-2.5">
-          <Image
-            src="/logo.png"
-            alt="AI Chef"
-            width={40}
-            height={40}
-            className="size-9 object-contain transition-transform group-hover:scale-105 sm:size-10"
-            priority
-          />
+          <span className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-black/5 transition-transform group-hover:scale-105">
+            <Image
+              src="/logo.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="absolute left-1/2 top-[-20%] size-[188%] max-w-none -translate-x-1/2"
+              preload
+            />
+          </span>
           <span className="text-xl font-extrabold tracking-tight sm:text-2xl">
             AI <span className="text-gradient-warm">Chef</span>
           </span>

@@ -15,17 +15,14 @@ export function SiteFooter() {
     <footer className="mt-auto border-t border-border/70 bg-card/70">
       <div className="container-premium flex flex-col gap-8 py-12 md:flex-row md:items-center md:justify-between">
         <div className="space-y-3">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
-              alt="AI Chef"
-              width={36}
-              height={36}
-              className="size-9 object-contain"
+              alt="AI Chef — Smart recipes. Perfect meals."
+              width={1254}
+              height={1254}
+              className="h-auto w-32 rounded-2xl bg-white object-contain sm:w-36"
             />
-            <span className="text-lg font-extrabold tracking-tight">
-              AI <span className="text-gradient-warm">Chef</span>
-            </span>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
             Premium AI scaling for real kitchens — exact quantities, less waste,
