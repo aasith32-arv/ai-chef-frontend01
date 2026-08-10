@@ -94,6 +94,26 @@
   --sidebar-accent-foreground: #222222;
   --sidebar-border: #ececec;
   --sidebar-ring: #f97316;
+
+  /* Admin console semantic palette */
+  --admin-background: #fafaf8;
+  --admin-surface: #ffffff;
+  --admin-surface-soft: #fff8f3;
+  --admin-primary: #f4510b;
+  --admin-primary-hover: #d94308;
+  --admin-primary-soft: #fff0e8;
+  --admin-sidebar-active: #ffe8d9;
+  --admin-foreground: #191919;
+  --admin-muted-foreground: #6f6f6f;
+  --admin-subtle-foreground: #9a9a9a;
+  --admin-border: #e9e7e3;
+  --admin-border-strong: #ddd9d4;
+  --admin-success: #2f9e62;
+  --admin-success-soft: #eaf7ef;
+  --admin-warning: #b87408;
+  --admin-warning-soft: #fff6dc;
+  --admin-danger: #d94a45;
+  --admin-danger-soft: #fdedec;
 }
 
 .dark {
@@ -135,6 +155,24 @@
   --sidebar-accent-foreground: #f7f2ed;
   --sidebar-border: #3a312a;
   --sidebar-ring: #fb923c;
+  --admin-background: #171513;
+  --admin-surface: #211e1b;
+  --admin-surface-soft: #29231f;
+  --admin-primary: #fb7a34;
+  --admin-primary-hover: #ff914f;
+  --admin-primary-soft: #3b261b;
+  --admin-sidebar-active: #44291c;
+  --admin-foreground: #f7f3ef;
+  --admin-muted-foreground: #b9aea5;
+  --admin-subtle-foreground: #8f847b;
+  --admin-border: #3a342f;
+  --admin-border-strong: #4a423b;
+  --admin-success: #62c98e;
+  --admin-success-soft: #193629;
+  --admin-warning: #f0b64c;
+  --admin-warning-soft: #3c301a;
+  --admin-danger: #f07872;
+  --admin-danger-soft: #402321;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -241,6 +279,19 @@
 
   .card-premium {
     @apply rounded-3xl border border-border/80 bg-card shadow-premium;
+  }
+
+  .admin-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgb(25 25 25 / 0.03);
+  }
+
+  .admin-control {
+    border-color: var(--admin-border-strong);
+    background: var(--admin-surface);
+    color: var(--admin-foreground);
   }
 
   .pb-nav {

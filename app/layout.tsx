@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
-import { BottomNav } from "@/components/layout/bottom-nav";
-import { FloatingAiButton } from "@/components/layout/floating-ai-button";
+import { AppFrame } from "@/components/layout/app-frame";
 import { AuthProvider } from "@/providers/auth-provider";
 import { LanguageProvider } from "@/providers/language-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -59,13 +56,7 @@ export default function RootLayout({
                   >
                     Skip to content
                   </a>
-                  <SiteHeader />
-                  <main id="main-content" className="flex-1 pb-nav">
-                    {children}
-                  </main>
-                  <SiteFooter />
-                  <FloatingAiButton />
-                  <BottomNav />
+                  <AppFrame>{children}</AppFrame>
                   <Toaster richColors position="top-center" />
                 </AppErrorBoundary>
               </TooltipProvider>

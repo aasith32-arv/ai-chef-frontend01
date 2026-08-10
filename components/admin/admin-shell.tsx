@@ -1,23 +1,36 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 import {
   BookOpen,
-  ChartNoAxesCombined,
+  ChevronDown,
   CreditCard,
   FolderTree,
   LayoutDashboard,
-  Menu,
+  LogOut,
   Megaphone,
+  Menu,
+  Plus,
+  Search,
   Settings,
-  ShieldCheck,
   Tags,
   Users,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useLanguage } from "@/providers/language-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetClose,
@@ -27,85 +40,196 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/providers/auth-provider";
+import { useLanguage } from "@/providers/language-provider";
 
-const navigation = [
-  { href: "/admin", label: "admin.dashboard", icon: LayoutDashboard },
-  { href: "/admin/recipes", label: "admin.recipes", icon: BookOpen },
-  { href: "/admin/families", label: "admin.families", icon: FolderTree },
-  { href: "/admin/categories", label: "admin.categories", icon: Tags },
-  { href: "/admin/users", label: "admin.users", icon: Users },
-  { href: "/admin/advertisements", label: "admin.advertisements", icon: Megaphone },
-  { href: "/admin/payments", label: "admin.payments", icon: CreditCard },
-  { href: "/admin/settings", label: "admin.settings", icon: Settings },
+const groups = [
+  {
+    label: "Management",
+    items: [
+      { href: "/admin", label: "admin.dashboard", fallback: "Overview", icon: LayoutDashboard },
+      { href: "/admin/recipes", label: "admin.recipes", fallback: "Recipes", icon: BookOpen },
+      { href: "/admin/families", label: "admin.families", fallback: "Dish Families", icon: FolderTree },
+      { href: "/admin/categories", label: "admin.categories", fallback: "Categories", icon: Tags },
+    ],
+  },
+  {
+    label: "Customers",
+    items: [
+      { href: "/admin/users", label: "admin.users", fallback: "Users", icon: Users },
+      { href: "/admin/advertisements", label: "admin.advertisements", fallback: "Advertisements", icon: Megaphone },
+      { href: "/admin/payments", label: "admin.payments", fallback: "Payments", icon: CreditCard },
+    ],
+  },
+  {
+    label: "System",
+    items: [{ href: "/admin/settings", label: "admin.settings", fallback: "Settings", icon: Settings }],
+  },
+] as const;
+
+const routeTitles: Array<[string, string]> = [
+  ["/admin/recipes/new", "New recipe"],
+  ["/admin/recipes/", "Edit recipe"],
+  ["/admin/recipes", "Recipes"],
+  ["/admin/families", "Dish families"],
+  ["/admin/categories", "Categories"],
+  ["/admin/users", "Users"],
+  ["/admin/advertisements", "Advertisements"],
+  ["/admin/payments", "Payments"],
+  ["/admin/settings", "Settings"],
+  ["/admin", "Dashboard"],
 ];
+
+function initials(name: string) {
+  return name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+}
 
 function AdminNav({ mobile = false }: { mobile?: boolean }) {
   const pathname = usePathname();
   const { t } = useLanguage();
+
   return (
-    <nav aria-label="Admin" className="space-y-1">
-      {navigation.map((item) => {
-        const active =
-          item.href === "/admin"
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
-        const link = (
-          <Link
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition",
-              active
-                ? "bg-primary text-primary-foreground shadow-premium"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            )}
-          >
-            <item.icon className="size-4" />
-            {t(item.label)}
-          </Link>
-        );
-        return mobile ? <SheetClose key={item.href} asChild>{link}</SheetClose> : <div key={item.href}>{link}</div>;
-      })}
+    <nav aria-label="Admin" className="space-y-6">
+      {groups.map((group) => (
+        <div key={group.label}>
+          <p className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--admin-subtle-foreground)]">
+            {group.label}
+          </p>
+          <div className="space-y-1">
+            {group.items.map((item) => {
+              const active = item.href === "/admin" ? pathname === item.href : pathname.startsWith(item.href);
+              const label = t(item.label) || item.fallback;
+              const link = (
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors",
+                    active
+                      ? "bg-[var(--admin-sidebar-active)] text-[var(--admin-foreground)]"
+                      : "text-[var(--admin-muted-foreground)] hover:bg-[var(--admin-surface-soft)] hover:text-[var(--admin-foreground)]"
+                  )}
+                >
+                  <item.icon className={cn("size-[18px]", active && "text-[var(--admin-primary)]")} strokeWidth={1.8} />
+                  {label}
+                </Link>
+              );
+              return mobile ? <SheetClose key={item.href} asChild>{link}</SheetClose> : <div key={item.href}>{link}</div>;
+            })}
+          </div>
+        </div>
+      ))}
     </nav>
   );
 }
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="container-premium py-6 sm:py-8">
-      <div className="mb-5 flex items-center justify-between rounded-2xl border border-border bg-card p-3 lg:hidden">
-        <div className="flex items-center gap-2 font-extrabold">
-          <ShieldCheck className="size-5 text-primary" /> Admin Console
-        </div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" aria-label="Open admin navigation">
-              <Menu className="size-4" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left">
-            <SheetHeader>
-              <SheetTitle>AI Chef Admin</SheetTitle>
-              <SheetDescription>Secure catalog and account management</SheetDescription>
-            </SheetHeader>
-            <div className="px-3"><AdminNav mobile /></div>
-          </SheetContent>
-        </Sheet>
-      </div>
+function AdminIdentity({ compact = false }: { compact?: boolean }) {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const displayName = user?.full_name || user?.username || "Administrator";
 
-      <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <aside className="sticky top-24 hidden h-fit rounded-3xl border border-border bg-card p-4 shadow-sm lg:block">
-          <div className="mb-5 flex items-center gap-3 border-b border-border pb-4">
-            <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <ChartNoAxesCombined className="size-5" />
-            </div>
-            <div>
-              <p className="font-extrabold">AI Chef Admin</p>
-              <p className="text-xs text-muted-foreground">Management Console</p>
-            </div>
+  async function signOut() {
+    await logout();
+    router.push("/auth/login");
+  }
+
+  if (compact) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-11 gap-2 rounded-xl px-2" aria-label="Open administrator menu">
+            <Avatar><AvatarFallback className="bg-[var(--admin-primary-soft)] text-xs font-bold text-[var(--admin-primary)]">{initials(displayName)}</AvatarFallback></Avatar>
+            <span className="hidden max-w-32 truncate text-sm font-semibold sm:inline">{displayName}</span>
+            <ChevronDown className="size-4 text-muted-foreground" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56 p-2">
+          <DropdownMenuLabel>
+            <span className="block truncate text-sm text-foreground">{displayName}</span>
+            <span className="block truncate font-normal">{user?.email}</span>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={() => router.push("/profile")}>Profile</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" onSelect={() => void signOut()}><LogOut /> Sign out</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
+  return (
+    <div className="border-t border-[var(--admin-border)] pt-4">
+      <div className="flex items-center gap-3 px-2">
+        <Avatar size="lg"><AvatarFallback className="bg-[var(--admin-primary-soft)] font-bold text-[var(--admin-primary)]">{initials(displayName)}</AvatarFallback></Avatar>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-[var(--admin-foreground)]">{displayName}</p>
+          <p className="text-xs text-[var(--admin-muted-foreground)]">Administrator</p>
+        </div>
+        <Button variant="ghost" size="icon" className="size-10" aria-label="Sign out" onClick={() => void signOut()}><LogOut className="size-4" /></Button>
+      </div>
+    </div>
+  );
+}
+
+function AdminSidebar({ mobile = false }: { mobile?: boolean }) {
+  return (
+    <div className="flex h-full flex-col">
+      <Link href="/admin" className="flex items-center gap-3 px-2 py-1">
+        <span className="relative size-11 overflow-hidden rounded-xl bg-white ring-1 ring-black/5">
+          <Image src="/logo.png" alt="" width={1254} height={1254} className="absolute left-1/2 top-[-20%] size-[188%] max-w-none -translate-x-1/2" />
+        </span>
+        <span>
+          <span className="block text-lg font-bold tracking-tight text-[var(--admin-foreground)]">AI Chef</span>
+          <span className="block text-xs text-[var(--admin-muted-foreground)]">Admin Console</span>
+        </span>
+      </Link>
+      <Button asChild className="mt-6 min-h-11 rounded-xl bg-[var(--admin-primary)] shadow-none hover:bg-[var(--admin-primary-hover)]">
+        <Link href="/admin/recipes/new"><Plus className="size-4" /> Add Recipe</Link>
+      </Button>
+      <div className="mt-7 flex-1 overflow-y-auto"><AdminNav mobile={mobile} /></div>
+      <AdminIdentity />
+    </div>
+  );
+}
+
+export function AdminShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const title = routeTitles.find(([route]) => route === "/admin" ? pathname === route : pathname.startsWith(route))?.[1] || "Admin Console";
+
+  function submitSearch(event: FormEvent) {
+    event.preventDefault();
+    if (search.trim()) router.push(`/admin/recipes?search=${encodeURIComponent(search.trim())}`);
+  }
+
+  return (
+    <div data-admin-shell className="min-h-screen bg-[var(--admin-background)] text-[var(--admin-foreground)]">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[264px] border-r border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 lg:block">
+        <AdminSidebar />
+      </aside>
+
+      <div className="lg:pl-[264px]">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[var(--admin-border)] bg-[color:var(--admin-background)]/95 px-4 backdrop-blur sm:px-6 lg:h-[72px] lg:px-8">
+          <Sheet>
+            <SheetTrigger asChild><Button variant="outline" size="icon" className="size-11 rounded-xl lg:hidden" aria-label="Open admin navigation"><Menu className="size-5" /></Button></SheetTrigger>
+            <SheetContent side="left" className="w-[300px] border-[var(--admin-border)] bg-[var(--admin-surface)] p-5">
+              <SheetHeader className="sr-only"><SheetTitle>AI Chef Admin</SheetTitle><SheetDescription>Admin navigation</SheetDescription></SheetHeader>
+              <AdminSidebar mobile />
+            </SheetContent>
+          </Sheet>
+          <div className="min-w-0">
+            <p className="hidden text-xs font-medium text-[var(--admin-subtle-foreground)] sm:block">AI Chef / Admin</p>
+            <p className="truncate text-base font-semibold">{title}</p>
           </div>
-          <AdminNav />
-        </aside>
-        <section className="min-w-0">{children}</section>
+          <form onSubmit={submitSearch} className="relative ml-auto hidden w-full max-w-sm md:block">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--admin-subtle-foreground)]" />
+            <Input aria-label="Search admin recipes" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search recipes…" className="h-10 rounded-xl border-[var(--admin-border)] bg-[var(--admin-surface)] pl-9" />
+          </form>
+          <ThemeToggle />
+          <AdminIdentity compact />
+        </header>
+        <div className="mx-auto w-full max-w-[1600px] p-4 sm:p-6 lg:p-8">{children}</div>
       </div>
     </div>
   );

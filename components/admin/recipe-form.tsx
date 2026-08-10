@@ -149,6 +149,7 @@ export function RecipeForm({
   const instructions = useFieldArray({ control: form.control, name: "steps" });
   const intelligence = useFieldArray({ control: form.control, name: "cooking_steps" });
   const image = useWatch({ control: form.control, name: "image" });
+  const publicationStatus = useWatch({ control: form.control, name: "publication_status" });
 
   function move<T extends { move: (from: number, to: number) => void }>(array: T, index: number, direction: -1 | 1, length: number) {
     const target = index + direction;
@@ -157,7 +158,7 @@ export function RecipeForm({
 
   return (
     <form
-      className="space-y-6"
+      className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_280px]"
       onSubmit={form.handleSubmit(async (values) => {
         await onSubmit({
           name: values.name.trim(),
@@ -204,7 +205,8 @@ export function RecipeForm({
         });
       })}
     >
-      <Card>
+      <div className="min-w-0 space-y-6">
+      <Card id="general" className="admin-card scroll-mt-24 shadow-none">
         <CardHeader><CardTitle>1. Basic information</CardTitle></CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <Field label="Recipe name" error={form.formState.errors.name?.message}><Input {...form.register("name")} /></Field>
@@ -217,7 +219,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="classification" className="admin-card scroll-mt-24 shadow-none">
         <CardHeader><CardTitle>2. Classification</CardTitle></CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Field label="Category" error={form.formState.errors.category?.message}><Input {...form.register("category")} placeholder="Rice Dishes" /></Field>
@@ -231,7 +233,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="ingredients" className="admin-card scroll-mt-24 shadow-none">
         <CardHeader><CardTitle>3. Ingredients</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           {ingredients.fields.map((field, index) => (
@@ -246,7 +248,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="instructions" className="admin-card scroll-mt-24 shadow-none">
         <CardHeader><CardTitle>4. Cooking instructions</CardTitle></CardHeader>
         <CardContent className="space-y-3">
           {instructions.fields.map((field, index) => (
@@ -260,7 +262,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="cooking-intelligence" className="admin-card scroll-mt-24 shadow-none">
         <CardHeader><CardTitle>5. Curated Cooking Intelligence</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">Optional curated cues take priority. Conservative deterministic temperature and doneness validation still applies.</p>
@@ -288,7 +290,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card id="publishing" className="admin-card scroll-mt-24 shadow-none">
         <CardHeader><CardTitle>6. Media and publishing</CardTitle></CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <Field label="Unsplash image URL" hint="Only the deployment-configured images.unsplash.com host is accepted." error={form.formState.errors.image?.message}><Input {...form.register("image")} /></Field>
@@ -298,9 +300,26 @@ export function RecipeForm({
       </Card>
 
       {form.formState.errors.root && <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>}
-      <div className="sticky bottom-4 flex justify-end rounded-2xl border border-border bg-background/90 p-3 shadow-lg backdrop-blur">
-        <Button type="submit" size="lg" disabled={pending}><Save /> {pending ? "Saving…" : recipe ? "Save recipe" : "Create recipe"}</Button>
       </div>
+
+      <aside className="admin-card sticky bottom-3 z-20 p-3 xl:top-24 xl:bottom-auto xl:p-5">
+        <div className="hidden xl:block">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--admin-subtle-foreground)]">Recipe summary</p>
+        <div className="mt-4 rounded-xl bg-[var(--admin-surface-soft)] p-4">
+          <p className="text-sm font-semibold capitalize">{publicationStatus}</p>
+          <p className="mt-1 text-xs text-[var(--admin-muted-foreground)]">Current publication state</p>
+        </div>
+        <dl className="mt-4 grid grid-cols-3 gap-2 text-center">
+          <div className="rounded-xl border border-[var(--admin-border)] p-2"><dt className="text-lg font-bold">{ingredients.fields.length}</dt><dd className="text-[10px] text-[var(--admin-muted-foreground)]">Ingredients</dd></div>
+          <div className="rounded-xl border border-[var(--admin-border)] p-2"><dt className="text-lg font-bold">{instructions.fields.length}</dt><dd className="text-[10px] text-[var(--admin-muted-foreground)]">Instructions</dd></div>
+          <div className="rounded-xl border border-[var(--admin-border)] p-2"><dt className="text-lg font-bold">{intelligence.fields.length}</dt><dd className="text-[10px] text-[var(--admin-muted-foreground)]">AI steps</dd></div>
+        </dl>
+        <nav aria-label="Recipe editor sections" className="mt-5 space-y-1 border-y border-[var(--admin-border)] py-4 text-sm">
+          {[["general", "General"], ["classification", "Classification"], ["ingredients", "Ingredients"], ["instructions", "Instructions"], ["cooking-intelligence", "Cooking Intelligence"], ["publishing", "Publishing"]].map(([href, label]) => <a key={href} href={`#${href}`} className="block rounded-lg px-3 py-2 text-[var(--admin-muted-foreground)] hover:bg-[var(--admin-surface-soft)] hover:text-[var(--admin-foreground)]">{label}</a>)}
+        </nav>
+        </div>
+        <div className="flex justify-end gap-2 xl:mt-5 xl:block xl:space-y-2"><Button type="submit" className="min-h-11 rounded-xl xl:w-full" disabled={pending}><Save /> {pending ? "Saving…" : recipe ? "Save recipe" : "Create recipe"}</Button><Button asChild type="button" variant="ghost" className="hidden w-full rounded-xl xl:flex"><Link href="/admin/recipes">Cancel</Link></Button></div>
+      </aside>
     </form>
   );
 }
