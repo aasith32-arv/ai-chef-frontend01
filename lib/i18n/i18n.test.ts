@@ -15,6 +15,20 @@ describe("translate", () => {
     expect(translate("si", "nav.home")).toBe("මුල් පිටුව");
   });
 
+  it("provides discovery labels in English, Tamil, and Sinhala", () => {
+    for (const locale of ["en", "ta", "si"] as const) {
+      expect(translate(locale, "discovery.foodFamilies")).not.toBe(
+        "discovery.foodFamilies"
+      );
+      expect(translate(locale, "discovery.varieties")).not.toBe(
+        "discovery.varieties"
+      );
+      expect(translate(locale, "discovery.cuisine")).not.toBe(
+        "discovery.cuisine"
+      );
+    }
+  });
+
   it("falls back to English when locale key is missing", () => {
     // Force a key that exists in EN but we pretend locale lookup misses by using
     // an English-only path: missing keys fall through to EN then the key itself.

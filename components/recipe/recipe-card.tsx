@@ -25,8 +25,10 @@ export function RecipeCard({
   matchPercent,
 }: RecipeCardProps) {
   const to = href || `/recipe/${recipe.id}`;
-  const mins = 20 + (recipe.id % 7) * 5;
-  const calories = 280 + recipe.serving_size * 40;
+  const mins =
+    typeof recipe.prep_time === "number" || typeof recipe.cook_time === "number"
+      ? (recipe.prep_time ?? 0) + (recipe.cook_time ?? 0)
+      : 20 + (recipe.id % 7) * 5;
 
   return (
     <motion.div
@@ -65,7 +67,7 @@ export function RecipeCard({
             </span>
             <span className="inline-flex items-center gap-1 rounded-full bg-black/35 px-2.5 py-1 backdrop-blur-sm">
               <Flame className="size-3.5" />
-              {calories} kcal
+              {recipe.spice_level || recipe.difficulty || "Medium"}
             </span>
           </div>
         </div>
@@ -73,12 +75,16 @@ export function RecipeCard({
           <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
             {recipe.name}
           </h3>
+          {(recipe.cuisine || recipe.region) && (
+            <p className="text-xs font-semibold text-primary">
+              {[recipe.cuisine, recipe.region].filter(Boolean).join(" · ")}
+            </p>
+          )}
           <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {recipe.description || "Premium recipe scaled for any guest count."}
           </p>
           <p className="text-xs font-semibold uppercase tracking-wide text-primary/80">
-            Serves {recipe.serving_size} · {recipe.ingredients?.length || 0}{" "}
-            ingredients
+            {recipe.difficulty || "Easy"} · {recipe.diet_type || `Serves ${recipe.serving_size}`}
           </p>
         </div>
       </Link>

@@ -142,9 +142,18 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
   return (
     <div className="container-premium space-y-6 py-10 sm:py-14">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Badge variant="outline" className="rounded-full">
-          {t("recipe.languageNote")} {languageLabel}
-        </Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className="rounded-full">
+            {t("recipe.languageNote")} {languageLabel}
+          </Badge>
+          {recipe.family && (
+            <Button asChild variant="ghost" size="sm" className="rounded-full text-primary">
+              <Link href={`/families/${recipe.family.slug}`}>
+                {recipe.family.name} · {t("discovery.allVarieties")}
+              </Link>
+            </Button>
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"

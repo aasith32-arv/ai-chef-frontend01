@@ -122,7 +122,17 @@ export function DishSelector({
                     {items.map((recipe) => (
                       <CommandItem
                         key={recipe.id}
-                        value={`${recipe.name} ${recipe.category}`}
+                        value={[
+                          recipe.name,
+                          recipe.category,
+                          recipe.family?.name,
+                          recipe.cuisine,
+                          recipe.region,
+                          recipe.protein,
+                          ...(recipe.tags ?? []),
+                        ]
+                          .filter(Boolean)
+                          .join(" ")}
                         onSelect={() => {
                           onChange(recipe.name, recipe);
                           setOpen(false);

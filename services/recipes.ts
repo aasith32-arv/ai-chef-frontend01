@@ -4,6 +4,14 @@ import type { Recipe, RecipeListData } from "@/types/api";
 export type RecipeQuery = {
   search?: string;
   category?: string;
+  family?: string;
+  cuisine?: string;
+  region?: string;
+  protein?: string;
+  diet_type?: string;
+  difficulty?: string;
+  spice_level?: string;
+  max_cook_time?: number;
   page?: number;
   per_page?: number;
 };

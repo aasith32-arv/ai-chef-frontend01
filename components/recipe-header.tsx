@@ -18,7 +18,10 @@ export function RecipeHeader({
   actions,
 }: RecipeHeaderProps) {
   const image = recipeImage(recipe);
-  const mins = 20 + (recipe.id % 7) * 5;
+  const mins =
+    typeof recipe.prep_time === "number" || typeof recipe.cook_time === "number"
+      ? (recipe.prep_time ?? 0) + (recipe.cook_time ?? 0)
+      : 20 + (recipe.id % 7) * 5;
 
   return (
     <div className="card-premium overflow-hidden">
@@ -28,7 +31,7 @@ export function RecipeHeader({
           alt={recipe.name}
           fill
           className="object-cover"
-          priority
+          loading="eager"
           sizes="(max-width: 1024px) 100vw, 900px"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -46,8 +49,13 @@ export function RecipeHeader({
             </Badge>
             <Badge className="rounded-full bg-black/35 text-white backdrop-blur-sm">
               <Flame className="mr-1 size-3.5" />
-              Medium
+              {recipe.spice_level || "Medium"}
             </Badge>
+            {recipe.cuisine && (
+              <Badge className="rounded-full bg-black/35 text-white backdrop-blur-sm">
+                {recipe.cuisine}{recipe.region ? ` · ${recipe.region}` : ""}
+              </Badge>
+            )}
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
             {recipe.name}

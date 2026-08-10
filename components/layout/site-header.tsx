@@ -11,8 +11,10 @@ import {
   Home,
   Menu,
   ShoppingCart,
+  ShieldCheck,
   Sparkles,
   UserRound,
+  UtensilsCrossed,
   Wand2,
 } from "lucide-react";
 import { useState } from "react";
@@ -32,6 +34,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", labelKey: "nav.home", fallback: "Home", icon: Home },
+  { href: "/families", labelKey: "nav.discover", fallback: "Discover", icon: UtensilsCrossed },
   { href: "/calculate", labelKey: "nav.calculate", fallback: "Calculate", icon: Calculator },
   { href: "/suggest", labelKey: "nav.suggest", fallback: "Suggest", icon: Wand2 },
   { href: "/pricing", labelKey: "nav.pricing", fallback: "Pricing", icon: CreditCard },
@@ -101,6 +104,14 @@ export function SiteHeader() {
           <LanguageSwitcher />
           {user ? (
             <>
+              {user.role === "admin" && (
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link href="/admin">
+                    <ShieldCheck className="size-4" />
+                    {t("admin.open") || "Admin Console"}
+                  </Link>
+                </Button>
+              )}
               <Button asChild variant="ghost" className="rounded-full">
                 <Link href="/profile">
                   <UserRound className="size-4" />
@@ -160,6 +171,16 @@ export function SiteHeader() {
                 <div className="my-2 h-px bg-border" />
                 {user ? (
                   <>
+                    {user.role === "admin" && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setOpen(false)}
+                        className="flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold hover:bg-muted"
+                      >
+                        <ShieldCheck className="size-4 text-primary" />
+                        {t("admin.open") || "Admin Console"}
+                      </Link>
+                    )}
                     <Link
                       href="/profile"
                       onClick={() => setOpen(false)}

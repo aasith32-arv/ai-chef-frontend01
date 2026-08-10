@@ -8,19 +8,21 @@ import { motion } from "framer-motion";
 import { ArrowRight, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { foodHeroImage } from "@/lib/food-images";
+import { useLanguage } from "@/providers/language-provider";
 
 export function HomeHero() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [query, setQuery] = useState("");
 
   function onSearch(e: FormEvent) {
     e.preventDefault();
     const dish = query.trim();
     if (!dish) {
-      router.push("/calculate");
+      router.push("/families");
       return;
     }
-    router.push(`/calculate?dish=${encodeURIComponent(dish)}`);
+    router.push(`/families?search=${encodeURIComponent(dish)}`);
   }
 
   return (
@@ -65,12 +67,12 @@ export function HomeHero() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search Biryani, Kottu, Curry..."
+              placeholder={t("discovery.searchPlaceholder")}
               className="h-11 w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
-              aria-label="Search dishes"
+              aria-label={t("discovery.search")}
             />
             <Button type="submit" className="rounded-full px-5 shadow-premium">
-              Scale
+              {t("discovery.search")}
               <ArrowRight className="size-4" />
             </Button>
           </form>

@@ -13,15 +13,8 @@ import {
   type RecentRecipe,
 } from "@/lib/recent-recipes";
 import { fadeUp, staggerContainer, staggerDelay } from "@/lib/motion";
-
-const CATEGORIES = [
-  { name: "Rice", emoji: "🍚", href: "/calculate?dish=Chicken%20Biryani" },
-  { name: "Curry", emoji: "🍛", href: "/calculate?dish=Chicken%20Curry" },
-  { name: "Street", emoji: "🌮", href: "/calculate?dish=Kottu" },
-  { name: "Fried Rice", emoji: "🥘", href: "/calculate?dish=Vegetable%20Fried%20Rice" },
-  { name: "Seafood", emoji: "🐟", href: "/calculate?dish=Fish%20Curry" },
-  { name: "Veg", emoji: "🥗", href: "/calculate?dish=Vegetable%20Curry" },
-];
+import { DISCOVERY_CATEGORIES } from "@/lib/discovery";
+import { useLanguage } from "@/providers/language-provider";
 
 const emptyRecent: RecentRecipe[] = [];
 
@@ -30,14 +23,15 @@ type HomeSectionsProps = {
 };
 
 export function CategoryStrip() {
+  const { t } = useLanguage();
   return (
     <section className="container-premium">
       <div className="mb-5">
         <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-          Categories
+          {t("discovery.foodCategories")}
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Jump into a cuisine mood
+          {t("discovery.chooseCategory")}
         </p>
       </div>
       <motion.div
@@ -47,20 +41,20 @@ export function CategoryStrip() {
         whileInView="show"
         viewport={{ once: true }}
       >
-        {CATEGORIES.map((cat, index) => (
+        {DISCOVERY_CATEGORIES.map((cat, index) => (
           <motion.div
-            key={cat.name}
+            key={cat.value}
             variants={fadeUp}
             transition={staggerDelay(index)}
           >
             <Link
-              href={cat.href}
+              href={`/families?category=${encodeURIComponent(cat.value)}`}
               className="flex min-w-[118px] flex-col items-center gap-2 rounded-3xl border border-border bg-card px-4 py-4 shadow-premium transition-transform hover:-translate-y-1"
             >
               <span className="text-2xl" aria-hidden>
                 {cat.emoji}
               </span>
-              <span className="text-sm font-bold">{cat.name}</span>
+              <span className="text-sm font-bold">{t(cat.labelKey)}</span>
             </Link>
           </motion.div>
         ))}
@@ -125,6 +119,19 @@ function RecentlyViewedSection() {
         serving_size: item.serving_size,
         steps: [],
         image: item.image,
+        slug: null,
+        family_id: null,
+        family: null,
+        cuisine: null,
+        region: null,
+        protein: null,
+        diet_type: null,
+        difficulty: null,
+        prep_time: null,
+        cook_time: null,
+        spice_level: null,
+        tags: [],
+        publication_status: "published",
         created_at: "",
         updated_at: "",
         ingredients: [],

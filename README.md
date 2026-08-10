@@ -1,6 +1,13 @@
 # AI Chef — Frontend
 
-Next.js client for **smart-chef-api**.
+Next.js client for **smart-chef-api01**.
+
+## Food discovery
+
+The public `/families` route provides category → dish family → recipe variety discovery. Family
+pages use `/families/[slug]`, support cuisine/protein/difficulty/spice filters, and open the existing
+`/recipe/[id]` detail experience. Broad search matches families and recipes by name, cuisine,
+region, protein, and tags. All new labels use the English, Tamil, and Sinhala message catalog.
 
 ## AI Cooking Intelligence
 
@@ -18,20 +25,42 @@ steps. The plan provides:
 The frontend uses the existing `NEXT_PUBLIC_API_URL`. No new frontend environment variable is
 required.
 
+## Admin Console
+
+Authenticated Admins can open `/admin` from the header. The responsive console provides dashboard
+statistics and management pages for recipes, dynamic ingredients, instructions, curated Cooking
+Intelligence steps, dish families, categories, users, advertisements, subscriptions, and safe
+runtime settings.
+
+The route guard hides Admin screens from ordinary users, while the Flask API remains the security
+authority for every request. Recipe edits use the same public recipe records and IDs, so discovery,
+scaling, recommendations, favorites, shopping lists, AI fallback plans, and Guided Cooking remain
+connected. Create the first Admin with the backend's interactive `flask create-admin` command; do
+not add credentials or server secrets to this frontend.
+
 ## Run
 
 1. Start API:
 
 ```bash
-cd ../smart-chef-api
+cd ../smart-chef-api01
 .\.venv\Scripts\python.exe run.py
 ```
 
-2. Add your OpenAI key (for AI quantities + cooking steps):
+2. Select an AI provider and add its matching server-side key (for AI quantities + cooking steps):
 
-In `smart-chef-api/.env`:
+In `smart-chef-api01/.env`:
 
+```env
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your-real-key
+GEMINI_MODEL=gemini-flash-latest
 ```
+
+Or use OpenAI:
+
+```env
+AI_PROVIDER=openai
 OPENAI_API_KEY=sk-your-real-key
 OPENAI_MODEL=gpt-4o-mini
 ```
@@ -41,7 +70,7 @@ Restart the API after saving.
 3. Start this app:
 
 ```bash
-cd ../frontend
+cd ../ai-chef-frontend01
 npm run dev
 ```
 
@@ -66,8 +95,9 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Flow
 
-1. **Calculate** — pick Biryani / Kottu / Fried Rice (or type any dish) → set people → get quantities + cook steps (`POST /ai/plan`, falls back to local `/calculate`)
-2. **Suggest** — enter pantry ingredients → AI dish ideas (`POST /ai/suggest`)
-3. **Saved** — favorites (sign in required)
+1. **Discover** — category → family → authentic variety → existing recipe detail
+2. **Calculate** — pick a variety → set people → get quantities + cooking steps (`POST /ai/plan`, falls back to local `/calculate`)
+3. **Suggest** — enter pantry ingredients → AI dish ideas (`POST /ai/suggest`)
+4. **Saved** — favorites (sign in required)
 
 `NEXT_PUBLIC_API_URL` defaults to `http://127.0.0.1:5000`.

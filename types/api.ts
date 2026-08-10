@@ -15,6 +15,8 @@ export type User = {
   username: string;
   email: string;
   full_name: string | null;
+  role: "user" | "admin";
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -46,17 +48,74 @@ export type Ingredient = {
   unit: string;
 };
 
+export type DishFamily = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  category: string;
+  image: string | null;
+  is_active: boolean;
+  recipe_count?: number;
+};
+
 export type Recipe = {
   id: number;
   name: string;
+  slug: string | null;
   category: string;
+  family_id: number | null;
+  family: DishFamily | null;
   description: string | null;
   serving_size: number;
   steps: string[];
   image: string | null;
+  cuisine: string | null;
+  region: string | null;
+  protein: string | null;
+  diet_type: string | null;
+  difficulty: string | null;
+  prep_time: number | null;
+  cook_time: number | null;
+  spice_level: string | null;
+  tags: string[];
+  publication_status: "draft" | "published" | "inactive";
   created_at: string;
   updated_at: string;
   ingredients: Ingredient[];
+};
+
+export type AdminCookingStep = {
+  id?: number;
+  step_number?: number;
+  title: string;
+  instruction: string;
+  duration: number | null;
+  minimum_duration: number | null;
+  maximum_duration: number | null;
+  heat_level: string | null;
+  temperature_min: number | null;
+  temperature_max: number | null;
+  visual_cue: string | null;
+  colour_stage: string | null;
+  texture_cue: string | null;
+  aroma_cue: string | null;
+  transformation_before: string | null;
+  transformation_process: string | null;
+  transformation_after: string | null;
+  purpose: string | null;
+  benefits: string[];
+  warnings: string[];
+  common_mistakes: string[];
+  correction: string | null;
+  scientific_explanation: string | null;
+  critical: boolean;
+  ingredient_names?: string[];
+};
+
+export type AdminRecipe = Recipe & {
+  managed_by_admin: boolean;
+  cooking_steps?: AdminCookingStep[];
 };
 
 export type Pagination = {
@@ -73,6 +132,15 @@ export type RecipeListData = {
   meta: Pagination;
   /** @deprecated use meta */
   pagination?: Pagination;
+};
+
+export type DishFamilyListData = {
+  items: DishFamily[];
+  count: number;
+};
+
+export type FamilyRecipeListData = RecipeListData & {
+  family: DishFamily;
 };
 
 export type CalculateResult = {

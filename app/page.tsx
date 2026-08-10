@@ -6,7 +6,7 @@ import { HomeSections } from "@/components/home/home-sections";
 import { EmptyState } from "@/components/empty-state";
 import { RecipeGridSkeleton } from "@/components/loading-skeletons";
 import { Button } from "@/components/ui/button";
-import { getAllRecipes } from "@/services/recipes";
+import { getRecipes } from "@/services/recipes";
 import type { Recipe } from "@/types/api";
 import { AlertCircle } from "lucide-react";
 
@@ -19,11 +19,11 @@ export default function HomePage() {
 
   useEffect(() => {
     let cancelled = false;
-    void getAllRecipes()
-      .then((items) => {
+    void getRecipes({ page: 1, per_page: 16 })
+      .then((data) => {
         if (cancelled) return;
         startTransition(() => {
-          setRecipes(items);
+          setRecipes(data.items);
           setError(false);
           setLoading(false);
         });

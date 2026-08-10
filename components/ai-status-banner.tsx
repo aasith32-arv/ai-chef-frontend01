@@ -84,11 +84,8 @@ export function AIStatusBanner() {
         <p className="mt-0.5 text-muted-foreground">{status.message}</p>
         {apiUp && !providerOk && (
           <p className="mt-1 text-muted-foreground">
-            Local recipes still work. Set{" "}
-            <code className="rounded bg-muted px-1">AI_PROVIDER</code> and its matching
-            API key in{" "}
-            <code className="rounded bg-muted px-1">smart-chef-api/.env</code>, then
-            restart <code className="rounded bg-muted px-1">python run.py</code>.
+            Restart the backend after updating{" "}
+            <code className="rounded bg-muted px-1">smart-chef-api01/.env</code>.
           </p>
         )}
       </div>
