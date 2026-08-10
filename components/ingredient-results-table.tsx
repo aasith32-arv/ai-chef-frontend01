@@ -4,15 +4,17 @@ import type { ScaledIngredient } from "@/lib/ingredient-calculator";
 import { useLanguage } from "@/providers/language-provider";
 
 type IngredientResultsTableProps = {
-  ingredients: ScaledIngredient[];
+  ingredients: Array<ScaledIngredient & { substitutedFor?: string }>;
   people: number;
   dishName: string;
+  onUndoSubstitution?: (originalIngredient: string) => void;
 };
 
 export function IngredientResultsTable({
   ingredients,
   people,
   dishName,
+  onUndoSubstitution,
 }: IngredientResultsTableProps) {
   const { t } = useLanguage();
 
@@ -27,8 +29,37 @@ export function IngredientResultsTable({
           {people === 1 ? t("results.person") : t("results.people")}
         </p>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[280px] text-left text-sm">
+      <div className="divide-y divide-border sm:hidden">
+        {ingredients.map((item, index) => (
+          <div key={item.name} className="flex items-center justify-between gap-4 px-4 py-3.5">
+            <div className="min-w-0 font-semibold">
+              <span className="mr-2 inline-flex size-6 items-center justify-center rounded-full bg-primary/10 text-[11px] font-bold text-primary">
+                {index + 1}
+              </span>
+              {item.name}
+              {item.substitutedFor && (
+                <div className="ml-8 mt-1 text-xs font-normal text-muted-foreground">
+                  {t("substitution.substitutedFor")} {item.substitutedFor}
+                  {onUndoSubstitution && (
+                    <button
+                      type="button"
+                      className="ml-2 font-bold text-primary hover:underline"
+                      onClick={() => onUndoSubstitution(item.substitutedFor!)}
+                    >
+                      {t("substitution.undo")}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+            <strong className="shrink-0 text-right text-primary tabular-nums">
+              {item.displayQuantity}
+            </strong>
+          </div>
+        ))}
+      </div>
+      <div className="hidden overflow-x-auto sm:block">
+        <table className="w-full text-left text-sm">
           <thead className="bg-muted/50 text-muted-foreground">
             <tr>
               <th scope="col" className="px-4 py-3 font-semibold sm:px-5">
@@ -50,6 +81,20 @@ export function IngredientResultsTable({
                     {index + 1}
                   </span>
                   {item.name}
+                  {item.substitutedFor && (
+                    <div className="ml-8 mt-1 text-xs font-normal text-muted-foreground">
+                      {t("substitution.substitutedFor")} {item.substitutedFor}
+                      {onUndoSubstitution && (
+                        <button
+                          type="button"
+                          className="ml-2 font-bold text-primary hover:underline"
+                          onClick={() => onUndoSubstitution(item.substitutedFor!)}
+                        >
+                          {t("substitution.undo")}
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </td>
                 <td className="px-4 py-3.5 text-base font-extrabold tabular-nums text-primary sm:px-5">
                   {item.displayQuantity}

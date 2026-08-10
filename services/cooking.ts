@@ -21,11 +21,17 @@ export async function troubleshootCooking(problem: string, context = "") {
   );
 }
 
-export async function getSubstitutions(ingredient: string, recipeId: number) {
+export async function getSubstitutions(
+  ingredient: string,
+  recipeId: number,
+  context: { ingredientId?: number; servings?: number } = {}
+) {
   return unwrap<SubstitutionResult>(
     apiClient.post("/cooking/substitute", {
       ingredient,
       recipe_id: recipeId,
+      ingredient_id: context.ingredientId,
+      servings: context.servings,
     })
   );
 }

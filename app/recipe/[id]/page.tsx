@@ -5,6 +5,7 @@ import type { ApiSuccess, Recipe } from "@/types/api";
 
 type PageProps = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ servings?: string }>;
 };
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
@@ -38,12 +39,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function RecipePage({ params }: PageProps) {
+export default async function RecipePage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const { servings } = await searchParams;
   if (!/^\d+$/.test(id)) notFound();
 
   const recipe = await fetchRecipe(id);
   if (!recipe) notFound();
 
-  return <RecipeDetailClient recipe={recipe} />;
+  const requestedServings = Number(servings);
+  const initialServings =
+    Number.isInteger(requestedServings) && requestedServings >= 1 && requestedServings <= 200
+      ? requestedServings
+      : recipe.serving_size;
+
+  return <RecipeDetailClient recipe={recipe} initialServings={initialServings} />;
 }

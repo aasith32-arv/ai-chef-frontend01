@@ -26,11 +26,12 @@ import { useLanguage } from "@/providers/language-provider";
 
 type RecipeDetailClientProps = {
   recipe: Recipe;
+  initialServings?: number;
 };
 
-export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
+export function RecipeDetailClient({ recipe, initialServings }: RecipeDetailClientProps) {
   const { locale, t } = useLanguage();
-  const [servings, setServings] = useState(recipe.serving_size);
+  const [servings, setServings] = useState(initialServings ?? recipe.serving_size);
   const [translatedName, setTranslatedName] = useState(recipe.name);
   const [translatedDesc, setTranslatedDesc] = useState(
     recipe.description || ""
@@ -187,7 +188,7 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
         }
         servingsControl={
           <div className="max-w-md space-y-4 rounded-3xl bg-surface p-4 ring-1 ring-border">
-            <GuestStepper value={servings} onChange={setServings} max={100} />
+            <GuestStepper value={servings} onChange={setServings} max={200} />
             <NutritionStrip people={servings} seed={recipe.name} />
           </div>
         }
@@ -202,7 +203,7 @@ export function RecipeDetailClient({ recipe }: RecipeDetailClientProps) {
             Ingredients &amp; Steps
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="cooking-plan">
+        <TabsContent id="guided-cooking" value="cooking-plan" className="scroll-mt-24">
           <CookingIntelligencePanel recipeId={recipe.id} servings={servings} />
         </TabsContent>
         <TabsContent value="recipe-basics">

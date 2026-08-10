@@ -29,6 +29,38 @@ describe("translate", () => {
     }
   });
 
+  it("provides calculator actions in English, Tamil, and Sinhala", () => {
+    for (const locale of ["en", "ta", "si"] as const) {
+      for (const key of [
+        "calculate.searchRecipes",
+        "calculate.calculateIngredients",
+        "calculate.addShopping",
+        "calculate.viewRecipe",
+        "calculate.startCooking",
+        "calculate.increasePeople",
+        "calculate.decreasePeople",
+      ]) {
+        expect(translate(locale, key)).not.toBe(key);
+      }
+    }
+  });
+
+  it("provides substitution labels in English, Tamil, and Sinhala", () => {
+    for (const locale of ["en", "ta", "si"] as const) {
+      for (const key of [
+        "substitution.title",
+        "substitution.find",
+        "substitution.why",
+        "substitution.adjustment",
+        "substitution.use",
+        "substitution.undo",
+        "substitution.noneTitle",
+      ]) {
+        expect(translate(locale, key)).not.toBe(key);
+      }
+    }
+  });
+
   it("falls back to English when locale key is missing", () => {
     // Force a key that exists in EN but we pretend locale lookup misses by using
     // an English-only path: missing keys fall through to EN then the key itself.

@@ -37,7 +37,8 @@ export function LanguageSwitcher({
           type="button"
           onClick={() => setLocale(item.code as Locale)}
           className={cn(
-            "rounded-full px-2.5 py-1 text-xs font-medium transition-all",
+            "rounded-full py-1 text-xs font-medium transition-all",
+            compact ? "px-2 uppercase" : "px-2.5",
             locale === item.code
               ? "bg-primary text-primary-foreground shadow-sm"
               : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -45,7 +46,7 @@ export function LanguageSwitcher({
           aria-pressed={locale === item.code}
           title={item.label}
         >
-          {item.native}
+          {compact ? item.code : item.native}
         </button>
       ))}
     </div>

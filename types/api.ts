@@ -330,12 +330,22 @@ export type TroubleshootingResult = {
 
 export type SubstitutionResult = {
   ingredient: string;
+  recipe_id?: number | null;
+  original_quantity?: number | null;
+  original_unit?: string | null;
+  original_display?: string | null;
   options: Array<{
     substitution: string;
+    suitability?: "Best Match" | "Good Alternative" | "Possible Alternative" | string;
     why_it_works: string;
     how_much: string;
+    adjustment?: string;
     what_changes: string;
+    quantity?: number | null;
+    unit?: string | null;
+    display_quantity?: string | null;
   }>;
+  no_substitute_reason?: string | null;
   context_warning: string;
   source: string;
 };

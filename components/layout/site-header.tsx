@@ -145,7 +145,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-          <LanguageSwitcher />
+          <LanguageSwitcher compact />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full" aria-label="Open menu">
