@@ -1,5 +1,10 @@
+import axios from "axios";
 import { describe, expect, it } from "vitest";
-import { resolveApiBaseUrl, resolveRuntimeApiBaseUrl } from "@/lib/api-client";
+import {
+  getErrorMessage,
+  resolveApiBaseUrl,
+  resolveRuntimeApiBaseUrl,
+} from "@/lib/api-client";
 
 describe("resolveApiBaseUrl", () => {
   it("uses the default API base when no override is provided", () => {
@@ -37,5 +42,23 @@ describe("resolveApiBaseUrl", () => {
     expect(
       resolveRuntimeApiBaseUrl("development", "http://localhost:5000/api/v1")
     ).toBe("http://localhost:5000/api/v1");
+  });
+
+  it("shows a useful sign-in message when a proxy returns a bare server error", () => {
+    const error = new axios.AxiosError(
+      "Request failed with status code 500",
+      "ERR_BAD_RESPONSE",
+      { url: "/login", headers: new axios.AxiosHeaders() },
+      undefined,
+      {
+        status: 500,
+        statusText: "Internal Server Error",
+        headers: {},
+        config: { url: "/login", headers: new axios.AxiosHeaders() },
+        data: "Internal Server Error",
+      }
+    );
+
+    expect(getErrorMessage(error)).toContain("backend migration is current");
   });
 });

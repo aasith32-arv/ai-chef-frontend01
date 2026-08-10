@@ -126,6 +126,16 @@ export function getErrorMessage(error: unknown, fallback = "Something went wrong
     const ax = error as AxiosError<ApiError>;
     const data = ax.response?.data;
     if (data?.message) return data.message;
+    const requestUrl = ax.config?.url || "";
+    if (requestUrl.includes("/login") && ax.response?.status === 401) {
+      return "Invalid email or password.";
+    }
+    if (requestUrl.includes("/login") && ax.response?.status === 500) {
+      return "The sign-in service could not complete the request. Check that the backend migration is current and try again.";
+    }
+    if (!ax.response) {
+      return "Cannot reach the AI Chef API. Check that the backend is running and try again.";
+    }
     if (ax.message) return ax.message;
   }
   if (error instanceof Error) return error.message;
