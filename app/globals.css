@@ -95,25 +95,6 @@
   --sidebar-border: #ececec;
   --sidebar-ring: #f97316;
 
-  /* Admin console semantic palette */
-  --admin-background: #fafaf8;
-  --admin-surface: #ffffff;
-  --admin-surface-soft: #fff8f3;
-  --admin-primary: #f4510b;
-  --admin-primary-hover: #d94308;
-  --admin-primary-soft: #fff0e8;
-  --admin-sidebar-active: #ffe8d9;
-  --admin-foreground: #191919;
-  --admin-muted-foreground: #6f6f6f;
-  --admin-subtle-foreground: #9a9a9a;
-  --admin-border: #e9e7e3;
-  --admin-border-strong: #ddd9d4;
-  --admin-success: #2f9e62;
-  --admin-success-soft: #eaf7ef;
-  --admin-warning: #b87408;
-  --admin-warning-soft: #fff6dc;
-  --admin-danger: #d94a45;
-  --admin-danger-soft: #fdedec;
 }
 
 .dark {
@@ -155,24 +136,58 @@
   --sidebar-accent-foreground: #f7f2ed;
   --sidebar-border: #3a312a;
   --sidebar-ring: #fb923c;
-  --admin-background: #171513;
-  --admin-surface: #211e1b;
-  --admin-surface-soft: #29231f;
-  --admin-primary: #fb7a34;
-  --admin-primary-hover: #ff914f;
-  --admin-primary-soft: #3b261b;
-  --admin-sidebar-active: #44291c;
-  --admin-foreground: #f7f3ef;
-  --admin-muted-foreground: #b9aea5;
-  --admin-subtle-foreground: #8f847b;
-  --admin-border: #3a342f;
-  --admin-border-strong: #4a423b;
-  --admin-success: #62c98e;
-  --admin-success-soft: #193629;
-  --admin-warning: #f0b64c;
-  --admin-warning-soft: #3c301a;
-  --admin-danger: #f07872;
-  --admin-danger-soft: #402321;
+}
+
+[data-admin-theme="futuristic-ai-chef"] {
+  color-scheme: dark;
+  --admin-background: #050914;
+  --admin-background-secondary: #08111f;
+  --admin-sidebar: #070d18;
+  --admin-surface: #0c1728;
+  --admin-surface-elevated: #102036;
+  --admin-surface-soft: #0b1525;
+  --admin-primary: #ff6a00;
+  --admin-primary-hover: #ff8a00;
+  --admin-primary-soft: rgb(255 106 0 / 0.14);
+  --admin-primary-glow: rgb(255 106 0 / 0.28);
+  --admin-cyan: #28b8ff;
+  --admin-blue: #147bff;
+  --admin-cyan-soft: rgb(40 184 255 / 0.12);
+  --admin-cyan-glow: rgb(40 184 255 / 0.22);
+  --admin-sidebar-active: linear-gradient(90deg, rgb(40 184 255 / 0.17), rgb(20 123 255 / 0.07));
+  --admin-foreground: #f7faff;
+  --admin-muted-foreground: #aab8cc;
+  --admin-subtle-foreground: #8191a7;
+  --admin-border: rgb(126 171 220 / 0.16);
+  --admin-border-strong: rgb(40 184 255 / 0.32);
+  --admin-success: #34d399;
+  --admin-success-soft: rgb(52 211 153 / 0.12);
+  --admin-warning: #fbbf24;
+  --admin-warning-soft: rgb(251 191 36 / 0.13);
+  --admin-danger: #f87171;
+  --admin-danger-soft: rgb(248 113 113 / 0.13);
+  --background: var(--admin-background);
+  --foreground: var(--admin-foreground);
+  --card: var(--admin-surface);
+  --card-foreground: var(--admin-foreground);
+  --popover: var(--admin-surface-elevated);
+  --popover-foreground: var(--admin-foreground);
+  --primary: var(--admin-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--admin-surface-elevated);
+  --secondary-foreground: var(--admin-foreground);
+  --muted: var(--admin-surface-soft);
+  --muted-foreground: var(--admin-muted-foreground);
+  --accent: var(--admin-cyan-soft);
+  --accent-foreground: var(--admin-foreground);
+  --destructive: var(--admin-danger);
+  --border: var(--admin-border);
+  --input: var(--admin-border-strong);
+  --ring: var(--admin-cyan);
+  background-color: var(--admin-background);
+  background-image:
+    radial-gradient(circle at 82% 8%, rgb(20 123 255 / 0.1), transparent 34%),
+    radial-gradient(circle at 18% 92%, rgb(255 106 0 / 0.07), transparent 30%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -282,16 +297,30 @@
   }
 
   .admin-card {
-    background: var(--admin-surface);
+    background: linear-gradient(145deg, rgb(16 32 54 / 0.94), rgb(10 21 37 / 0.94));
     border: 1px solid var(--admin-border);
     border-radius: 1rem;
-    box-shadow: 0 1px 2px rgb(25 25 25 / 0.03);
+    box-shadow: 0 12px 32px rgb(0 0 0 / 0.2), 0 0 24px rgb(40 184 255 / 0.025);
   }
 
   .admin-control {
     border-color: var(--admin-border-strong);
     background: var(--admin-surface);
     color: var(--admin-foreground);
+  }
+
+  [data-admin-theme="futuristic-ai-chef"] input,
+  [data-admin-theme="futuristic-ai-chef"] textarea,
+  [data-admin-theme="futuristic-ai-chef"] select {
+    color: var(--admin-foreground);
+  }
+
+  [data-admin-theme="futuristic-ai-chef"] input:focus-visible,
+  [data-admin-theme="futuristic-ai-chef"] textarea:focus-visible,
+  [data-admin-theme="futuristic-ai-chef"] select:focus-visible {
+    border-color: rgb(40 184 255 / 0.55);
+    box-shadow: 0 0 0 3px rgb(40 184 255 / 0.08);
+    outline: none;
   }
 
   .pb-nav {

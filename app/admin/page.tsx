@@ -19,6 +19,7 @@ import { AdminPageHeader } from "@/components/admin/admin-page-header";
 import { AdminEmptyState, AdminErrorState, AdminStatCardSkeleton, AdminStatusBadge, publicationTone } from "@/components/admin/admin-ui";
 import { Button } from "@/components/ui/button";
 import { getErrorMessage } from "@/lib/api-client";
+import { useAuth } from "@/providers/auth-provider";
 import { getAdminDashboard, type AdminDashboard } from "@/services/admin";
 
 function formatDate(value: string) {
@@ -26,6 +27,7 @@ function formatDate(value: string) {
 }
 
 export default function AdminDashboardPage() {
+  const { user } = useAuth();
   const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,8 +55,8 @@ export default function AdminDashboardPage() {
     <div>
       <AdminPageHeader
         eyebrow="Overview"
-        title="Dashboard"
-        description="Manage recipes, customers and AI Chef operations from one secure workspace."
+        title={`Welcome back, ${user?.full_name || user?.username || "Administrator"}`}
+        description="Here’s what’s happening across AI Chef’s recipes, customers and intelligent cooking operations."
         actions={<Button asChild className="min-h-11 rounded-xl bg-[var(--admin-primary)] hover:bg-[var(--admin-primary-hover)]"><Link href="/admin/recipes/new"><Plus /> Add Recipe</Link></Button>}
       />
 
@@ -65,7 +67,7 @@ export default function AdminDashboardPage() {
           <section aria-label="Dashboard statistics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {cards.map(({ label, value, context, icon: Icon, primary }) => (
               <article key={label} className="admin-card p-5">
-                <div className={`flex size-10 items-center justify-center rounded-xl ${primary ? "bg-[var(--admin-primary)] text-white" : "bg-[var(--admin-primary-soft)] text-[var(--admin-primary)]"}`}><Icon className="size-5" strokeWidth={1.8} /></div>
+                <div className={`flex size-10 items-center justify-center rounded-xl border ${primary ? "border-[var(--admin-primary)]/30 bg-[var(--admin-primary-soft)] text-[var(--admin-primary)] shadow-[0_0_20px_var(--admin-primary-glow)]" : "border-[var(--admin-border-strong)] bg-[var(--admin-cyan-soft)] text-[var(--admin-cyan)]"}`}><Icon className="size-5" strokeWidth={1.8} /></div>
                 <p className="mt-5 text-[28px] font-bold leading-none tracking-tight">{value.toLocaleString()}</p>
                 <p className="mt-2 text-sm font-semibold">{label}</p>
                 <p className="mt-1 text-xs text-[var(--admin-muted-foreground)]">{context}</p>
@@ -83,7 +85,7 @@ export default function AdminDashboardPage() {
                 <div className="divide-y divide-[var(--admin-border)]">
                   {dashboard.recent_recipes.map((recipe) => (
                     <Link key={recipe.id} href={`/admin/recipes/${recipe.id}/edit`} className="flex min-h-16 items-center gap-4 px-5 py-3 transition-colors hover:bg-[var(--admin-surface-soft)]">
-                      <span className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--admin-primary-soft)] text-[var(--admin-primary)]">{recipe.image ? <Image src={recipe.image} alt="" fill sizes="48px" className="object-cover" /> : <BookOpen className="size-4" />}</span>
+                      <span className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--admin-border)] bg-[var(--admin-cyan-soft)] text-[var(--admin-cyan)]">{recipe.image ? <Image src={recipe.image} alt="" fill sizes="48px" className="object-cover" /> : <BookOpen className="size-4" />}</span>
                       <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{recipe.name}</span><span className="block truncate text-xs text-[var(--admin-muted-foreground)]">{recipe.family?.name || recipe.category} · {formatDate(recipe.created_at)}</span></span>
                       <AdminStatusBadge tone={publicationTone(recipe.publication_status)}>{recipe.publication_status}</AdminStatusBadge>
                     </Link>
@@ -98,7 +100,7 @@ export default function AdminDashboardPage() {
                 <ol className="divide-y divide-[var(--admin-border)]">
                   {dashboard.recent_audit.map((entry) => (
                     <li key={entry.id} className="flex gap-3 px-5 py-4">
-                      <span className="mt-1.5 size-2 shrink-0 rounded-full bg-[var(--admin-primary)]" />
+                      <span className="mt-1.5 size-2 shrink-0 rounded-full bg-[var(--admin-cyan)] shadow-[0_0_10px_var(--admin-cyan-glow)]" />
                       <div className="min-w-0"><p className="text-sm font-semibold capitalize">{entry.action.replaceAll("_", " ")}</p><p className="mt-1 text-xs leading-5 text-[var(--admin-muted-foreground)]">{entry.admin || `Admin ${entry.admin_user_id}`} · {entry.target_type} {entry.target_id ?? ""}<br />{formatDate(entry.created_at)}</p></div>
                     </li>
                   ))}

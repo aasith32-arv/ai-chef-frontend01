@@ -262,7 +262,7 @@ export function RecipeForm({
         </CardContent>
       </Card>
 
-      <Card id="cooking-intelligence" className="admin-card scroll-mt-24 shadow-none">
+      <Card id="cooking-intelligence" className="admin-card scroll-mt-24 border-[var(--admin-border-strong)] bg-[linear-gradient(145deg,rgb(16_32_54_/_0.96),rgb(8_24_43_/_0.96))] shadow-[0_0_28px_rgb(40_184_255_/_0.04)]">
         <CardHeader><CardTitle>5. Curated Cooking Intelligence</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">Optional curated cues take priority. Conservative deterministic temperature and doneness validation still applies.</p>

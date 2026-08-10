@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   BookOpen,
   CircleCheckBig,
+  Clock3,
   Copy,
   Eye,
   Grid2X2,
@@ -44,9 +45,11 @@ import type { AdminRecipe, Pagination } from "@/types/api";
 const emptyFilters = { category: "", family: "", cuisine: "", region: "", protein: "", diet_type: "", difficulty: "", spice_level: "" };
 
 function RecipeThumbnail({ recipe, large = false }: { recipe: AdminRecipe; large?: boolean }) {
+  const duration = recipeDuration(recipe);
   return (
     <div className={`relative shrink-0 overflow-hidden bg-[var(--admin-primary-soft)] ${large ? "aspect-[16/10] w-full" : "size-11 rounded-xl"}`}>
       {recipe.image ? <Image src={recipe.image} alt="" fill sizes={large ? "(max-width: 768px) 100vw, 320px" : "44px"} className="object-cover" /> : <span className="flex size-full items-center justify-center text-[var(--admin-primary)]"><BookOpen className={large ? "size-8" : "size-4"} /></span>}
+      {large && duration && <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-lg border border-[var(--admin-border-strong)] bg-[rgb(4_10_20_/_0.78)] px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur"><Clock3 className="size-3.5 text-[var(--admin-cyan)]" />{duration}</span>}
     </div>
   );
 }
@@ -131,7 +134,7 @@ export default function AdminRecipesPage() {
         <Button asChild variant="ghost" size="icon" aria-label={`Edit ${recipe.name}`}><Link href={`/admin/recipes/${recipe.id}/edit`}><Pencil /></Link></Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" aria-label={`More actions for ${recipe.name}`}><MoreHorizontal /></Button></DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 p-1.5">
+          <DropdownMenuContent data-admin-theme="futuristic-ai-chef" align="end" className="w-44 border-[var(--admin-border)] bg-[var(--admin-surface-elevated)] p-1.5 text-[var(--admin-foreground)]">
             {recipe.publication_status === "published" && <DropdownMenuItem asChild><Link href={`/recipe/${recipe.id}`}><Eye /> View recipe</Link></DropdownMenuItem>}
             <DropdownMenuItem asChild><Link href={`/admin/recipes/${recipe.id}/edit`}><Pencil /> Edit</Link></DropdownMenuItem>
             <DropdownMenuItem onSelect={() => void duplicate(recipe)}><Copy /> Duplicate</DropdownMenuItem>
@@ -145,7 +148,7 @@ export default function AdminRecipesPage() {
 
   return (
     <div>
-      <AdminPageHeader eyebrow="Catalog" title="Recipes" description={`${meta ? `${meta.total.toLocaleString()} recipes · ` : ""}Manage AI Chef’s recipe catalog across discovery, scaling, recommendations and Guided Cooking.`} actions={<Button asChild className="min-h-11 rounded-xl"><Link href="/admin/recipes/new"><Plus /> Add Recipe</Link></Button>} />
+      <AdminPageHeader eyebrow="Content Intelligence" title="Recipe Library" description={`${meta ? `${meta.total.toLocaleString()} recipes · ` : ""}Manage AI Chef’s recipe catalog across discovery, scaling, recommendations and Guided Cooking.`} actions={<Button asChild className="min-h-11 rounded-xl bg-[linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover))] shadow-[0_8px_24px_var(--admin-primary-glow)]"><Link href="/admin/recipes/new"><Plus /> Add Recipe</Link></Button>} />
 
       <section aria-label="Recipe filters" className="admin-card mb-5 p-4">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">

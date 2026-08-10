@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   BookOpen,
   ChevronDown,
@@ -107,11 +107,11 @@ function AdminNav({ mobile = false }: { mobile?: boolean }) {
                   className={cn(
                     "flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors",
                     active
-                      ? "bg-[var(--admin-sidebar-active)] text-[var(--admin-foreground)]"
-                      : "text-[var(--admin-muted-foreground)] hover:bg-[var(--admin-surface-soft)] hover:text-[var(--admin-foreground)]"
+                      ? "border border-[var(--admin-border-strong)] bg-[image:var(--admin-sidebar-active)] text-[var(--admin-foreground)] shadow-[0_0_20px_rgb(40_184_255_/_0.05)]"
+                      : "border border-transparent text-[var(--admin-muted-foreground)] hover:bg-[var(--admin-cyan-soft)] hover:text-[var(--admin-foreground)]"
                   )}
                 >
-                  <item.icon className={cn("size-[18px]", active && "text-[var(--admin-primary)]")} strokeWidth={1.8} />
+                  <item.icon className={cn("size-[18px]", active && "text-[var(--admin-cyan)]")} strokeWidth={1.8} />
                   {label}
                 </Link>
               );
@@ -144,7 +144,7 @@ function AdminIdentity({ compact = false }: { compact?: boolean }) {
             <ChevronDown className="size-4 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56 p-2">
+        <DropdownMenuContent data-admin-theme="futuristic-ai-chef" align="end" className="w-56 border-[var(--admin-border)] bg-[var(--admin-surface-elevated)] p-2 text-[var(--admin-foreground)]">
           <DropdownMenuLabel>
             <span className="block truncate text-sm text-foreground">{displayName}</span>
             <span className="block truncate font-normal">{user?.email}</span>
@@ -163,7 +163,7 @@ function AdminIdentity({ compact = false }: { compact?: boolean }) {
         <Avatar size="lg"><AvatarFallback className="bg-[var(--admin-primary-soft)] font-bold text-[var(--admin-primary)]">{initials(displayName)}</AvatarFallback></Avatar>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-[var(--admin-foreground)]">{displayName}</p>
-          <p className="text-xs text-[var(--admin-muted-foreground)]">Administrator</p>
+          <p className="flex items-center gap-1.5 text-xs text-[var(--admin-muted-foreground)]"><span className="size-1.5 rounded-full bg-[var(--admin-success)]" /> Administrator</p>
         </div>
         <Button variant="ghost" size="icon" className="size-10" aria-label="Sign out" onClick={() => void signOut()}><LogOut className="size-4" /></Button>
       </div>
@@ -180,10 +180,10 @@ function AdminSidebar({ mobile = false }: { mobile?: boolean }) {
         </span>
         <span>
           <span className="block text-lg font-bold tracking-tight text-[var(--admin-foreground)]">AI Chef</span>
-          <span className="block text-xs text-[var(--admin-muted-foreground)]">Admin Console</span>
+          <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--admin-muted-foreground)]">Admin Control Center</span>
         </span>
       </Link>
-      <Button asChild className="mt-6 min-h-11 rounded-xl bg-[var(--admin-primary)] shadow-none hover:bg-[var(--admin-primary-hover)]">
+      <Button asChild className="mt-6 min-h-12 rounded-xl border-0 bg-[linear-gradient(135deg,var(--admin-primary),var(--admin-primary-hover))] text-white shadow-[0_8px_24px_var(--admin-primary-glow)] hover:brightness-110">
         <Link href="/admin/recipes/new"><Plus className="size-4" /> Add Recipe</Link>
       </Button>
       <div className="mt-7 flex-1 overflow-y-auto"><AdminNav mobile={mobile} /></div>
@@ -198,33 +198,38 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [search, setSearch] = useState("");
   const title = routeTitles.find(([route]) => route === "/admin" ? pathname === route : pathname.startsWith(route))?.[1] || "Admin Console";
 
+  useEffect(() => {
+    document.body.dataset.adminTheme = "futuristic-ai-chef";
+    return () => { delete document.body.dataset.adminTheme; };
+  }, []);
+
   function submitSearch(event: FormEvent) {
     event.preventDefault();
     if (search.trim()) router.push(`/admin/recipes?search=${encodeURIComponent(search.trim())}`);
   }
 
   return (
-    <div data-admin-shell className="min-h-screen bg-[var(--admin-background)] text-[var(--admin-foreground)]">
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[264px] border-r border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 lg:block">
+    <div data-admin-theme="futuristic-ai-chef" className="min-h-screen bg-[var(--admin-background)] text-[var(--admin-foreground)]">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[264px] border-r border-[var(--admin-border)] bg-[var(--admin-sidebar)] p-5 lg:block">
         <AdminSidebar />
       </aside>
 
       <div className="lg:pl-[264px]">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[var(--admin-border)] bg-[color:var(--admin-background)]/95 px-4 backdrop-blur sm:px-6 lg:h-[72px] lg:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[var(--admin-border)] bg-[rgb(7_13_24_/_0.78)] px-4 backdrop-blur-xl sm:px-6 lg:h-[72px] lg:px-8">
           <Sheet>
             <SheetTrigger asChild><Button variant="outline" size="icon" className="size-11 rounded-xl lg:hidden" aria-label="Open admin navigation"><Menu className="size-5" /></Button></SheetTrigger>
-            <SheetContent side="left" className="w-[300px] border-[var(--admin-border)] bg-[var(--admin-surface)] p-5">
+            <SheetContent data-admin-theme="futuristic-ai-chef" side="left" className="w-[300px] border-[var(--admin-border)] bg-[var(--admin-sidebar)] p-5 text-[var(--admin-foreground)]">
               <SheetHeader className="sr-only"><SheetTitle>AI Chef Admin</SheetTitle><SheetDescription>Admin navigation</SheetDescription></SheetHeader>
               <AdminSidebar mobile />
             </SheetContent>
           </Sheet>
           <div className="min-w-0">
-            <p className="hidden text-xs font-medium text-[var(--admin-subtle-foreground)] sm:block">AI Chef / Admin</p>
+            <p className="hidden text-xs font-medium text-[var(--admin-subtle-foreground)] sm:block">AI Chef / Command Center</p>
             <p className="truncate text-base font-semibold">{title}</p>
           </div>
           <form onSubmit={submitSearch} className="relative ml-auto hidden w-full max-w-sm md:block">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--admin-subtle-foreground)]" />
-            <Input aria-label="Search admin recipes" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search recipes…" className="h-10 rounded-xl border-[var(--admin-border)] bg-[var(--admin-surface)] pl-9" />
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--admin-cyan)]" />
+            <Input aria-label="Search admin recipes" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search recipes…" className="h-10 rounded-xl border-[var(--admin-border)] bg-[rgb(16_32_54_/_0.75)] pl-9 placeholder:text-[var(--admin-subtle-foreground)]" />
           </form>
           <ThemeToggle />
           <AdminIdentity compact />

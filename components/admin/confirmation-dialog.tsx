@@ -30,7 +30,7 @@ export function ConfirmationDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent data-admin-theme="futuristic-ai-chef" className="border-[var(--admin-border)] bg-[var(--admin-surface-elevated)] text-[var(--admin-foreground)]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
