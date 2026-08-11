@@ -69,10 +69,14 @@ export function FamilyVarieties({ slug }: { slug: string }) {
       <Link href={`/families?category=${encodeURIComponent(family.category)}`} className="inline-flex items-center gap-2 text-sm font-bold text-primary">
         <ArrowLeft className="size-4" /> {t("discovery.backToFamilies")}
       </Link>
-      <header className="max-w-3xl space-y-3">
-        <p className="text-sm font-bold uppercase tracking-[0.16em] text-primary">{family.category}</p>
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">{family.name} {t("discovery.varieties")}</h1>
-        <p className="text-muted-foreground">{family.description}</p>
+      <header className="relative overflow-hidden rounded-3xl border border-border bg-card px-6 py-8 shadow-sm sm:px-10 sm:py-11">
+        <div className="absolute inset-y-0 right-0 hidden w-2/5 bg-[radial-gradient(circle_at_center,rgb(249_115_22_/_0.16),transparent_68%)] sm:block" aria-hidden />
+        <div className="relative max-w-3xl space-y-3">
+          <p className="text-sm font-bold uppercase tracking-[0.16em] text-primary">{family.category} · {recipes.length} {t("discovery.varieties").toLowerCase()}</p>
+          <h1 className="text-4xl font-extrabold uppercase tracking-tight sm:text-6xl">{family.name}<span className="sr-only"> {t("discovery.varieties")}</span></h1>
+          <p className="text-lg font-semibold text-foreground">Explore authentic {family.name.toLowerCase()} varieties</p>
+          {family.description && <p className="max-w-2xl leading-7 text-muted-foreground">{family.description}</p>}
+        </div>
       </header>
 
       <div className="grid gap-3 rounded-3xl border border-border bg-card p-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -83,7 +87,10 @@ export function FamilyVarieties({ slug }: { slug: string }) {
         <FilterSelect label={t("discovery.spiceLevel")} value={spice} onChange={setSpice} items={options("spice_level")} />
       </div>
 
-      <p className="text-sm font-semibold text-muted-foreground">{filtered.length} {t("discovery.varieties").toLowerCase()}</p>
+      <div className="flex items-center justify-between gap-4">
+        <div><h2 className="text-2xl font-extrabold">Choose your {family.name.toLowerCase()}</h2><p className="mt-1 text-sm text-muted-foreground">Open a variety to view its recipe, scale ingredients, and start Guided Cooking.</p></div>
+        <p className="shrink-0 text-sm font-semibold text-muted-foreground">{filtered.length} {t("discovery.varieties").toLowerCase()}</p>
+      </div>
       {filtered.length ? (
         <div data-testid="variety-grid" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((item, index) => <RecipeCard key={item.id} recipe={item} index={index} />)}

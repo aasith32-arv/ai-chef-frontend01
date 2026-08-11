@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 
 test.describe("AI Cooking Intelligence", () => {
   test("opens Cooking Mode and advances only when the cook confirms", async ({ page }) => {
-    await page.goto("/recipe/1");
+    await page.goto("/families/biryani");
+    await page.getByRole("link", { name: /Hyderabadi Chicken Biryani/ }).click();
+    await expect(page).toHaveURL(/\/recipe\/\d+/);
 
     await expect(
       page.getByRole("heading", { name: "AI Cooking Intelligence" })

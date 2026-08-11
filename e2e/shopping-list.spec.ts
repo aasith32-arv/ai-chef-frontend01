@@ -8,24 +8,24 @@ test.describe("Calculate → shopping list", () => {
   test("scales a dish and adds ingredients to the shopping list", async ({
     page,
   }) => {
-    await page.goto("/calculate?dish=Chicken%20Biryani");
+    await page.goto("/calculate?dish=Hyderabadi%20Chicken%20Biryani");
 
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
-    await expect(page.getByRole("combobox", { name: /select a dish/i })).toContainText(
-      /Chicken Biryani/i,
+    await expect(page.getByRole("combobox", { name: /search recipes/i })).toHaveValue(
+      /Hyderabadi Chicken Biryani/i,
       { timeout: 25_000 }
     );
 
     await page
-      .getByRole("button", { name: /quantities|cooking steps|generate/i })
+      .getByRole("button", { name: /calculate ingredients/i })
       .click();
 
     await expect(
-      page.getByRole("heading", { name: /Chicken Biryani/i })
+      page.getByRole("heading", { name: /Hyderabadi Chicken Biryani/i })
     ).toBeVisible({ timeout: 25_000 });
 
-    await page.getByRole("button", { name: /add to shopping list/i }).click();
+    await page.getByRole("button", { name: /add ingredients to shopping list/i }).click();
 
     await page.goto("/shopping-list");
     await expect(

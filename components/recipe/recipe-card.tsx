@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Clock3, Flame } from "lucide-react";
+import { Clock3, Flame, Gauge, MapPin, Utensils } from "lucide-react";
 import type { Recipe } from "@/types/api";
 import { Badge } from "@/components/ui/badge";
 import { recipeImage } from "@/lib/recipe-utils";
@@ -75,17 +75,16 @@ export function RecipeCard({
           <h3 className="text-lg font-bold tracking-tight text-foreground transition-colors group-hover:text-primary">
             {recipe.name}
           </h3>
-          {(recipe.cuisine || recipe.region) && (
-            <p className="text-xs font-semibold text-primary">
-              {[recipe.cuisine, recipe.region].filter(Boolean).join(" · ")}
-            </p>
-          )}
+          {(recipe.cuisine || recipe.region) && <p className="flex items-center gap-1.5 text-xs font-semibold text-primary"><MapPin className="size-3.5" />{[recipe.cuisine, recipe.region].filter(Boolean).join(" · ")}</p>}
           <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {recipe.description || "Premium recipe scaled for any guest count."}
           </p>
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary/80">
-            {recipe.difficulty || "Easy"} · {recipe.diet_type || `Serves ${recipe.serving_size}`}
-          </p>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-2 border-t border-border pt-3 text-xs font-semibold text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Utensils className="size-3.5 text-primary" />{recipe.protein && recipe.protein !== "None" ? recipe.protein : recipe.diet_type || "Vegetarian"}</span>
+            <span className="inline-flex items-center gap-1.5"><Gauge className="size-3.5 text-primary" />{recipe.difficulty || "Easy"}</span>
+            <span className="inline-flex items-center gap-1.5"><Clock3 className="size-3.5 text-primary" />{recipe.cook_time ?? mins} min cook</span>
+            <span className="inline-flex items-center gap-1.5"><Flame className="size-3.5 text-primary" />{recipe.spice_level || "Medium"}</span>
+          </div>
         </div>
       </Link>
     </motion.div>
