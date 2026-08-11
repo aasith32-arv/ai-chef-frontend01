@@ -27,12 +27,13 @@ import { IngredientTableSkeleton } from "@/components/loading-skeletons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { filterRecipeVarieties } from "@/lib/discovery";
 import { localizeIngredientList } from "@/lib/i18n/localize";
 import { quantitiesToRows, recipeImage } from "@/lib/recipe-utils";
 import { addShoppingItems } from "@/lib/shopping-list";
 import { useLanguage } from "@/providers/language-provider";
 import { calculateQuantities } from "@/services/calculator";
-import { getRecipes } from "@/services/recipes";
+import { getAllRecipes } from "@/services/recipes";
 import type { CalculateResult, Recipe } from "@/types/api";
 
 const PRESETS = [2, 4, 10, 25, 50, 100];
@@ -64,7 +65,7 @@ function CalculateContent() {
   const { locale, t } = useLanguage();
   const initialDish = searchParams.get("dish")?.trim() || "";
   const [query, setQuery] = useState(initialDish);
-  const [results, setResults] = useState<Recipe[]>([]);
+  const [catalog, setCatalog] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [searching, setSearching] = useState(true);
   const [searchError, setSearchError] = useState(false);
@@ -82,41 +83,47 @@ function CalculateContent() {
   const validPeople =
     Number.isInteger(people) && people >= MIN_PEOPLE && people <= MAX_PEOPLE;
 
+  const results = useMemo(() => {
+    const selectedName = selectedRecipe?.name.toLowerCase();
+    const shouldShowFullCatalog =
+      !query.trim() || (selectedName && query.trim().toLowerCase() === selectedName);
+
+    return shouldShowFullCatalog
+      ? catalog
+      : filterRecipeVarieties(catalog, { search: query });
+  }, [catalog, query, selectedRecipe]);
+
   useEffect(() => {
     let active = true;
-    const timer = window.setTimeout(() => {
-      setSearching(true);
-      setSearchError(false);
-      getRecipes({ search: query.trim() || undefined, page: 1, per_page: 8 })
-        .then((data) => {
-          if (!active) return;
-          setResults(data.items);
-          if (initialDish && !selectedRecipe) {
-            const exact = data.items.find(
-              (recipe) => recipe.name.toLowerCase() === initialDish.toLowerCase()
-            );
-            if (exact) {
-              setSelectedRecipe(exact);
-              setPeopleText(String(exact.serving_size));
-              setSearchOpen(false);
-            }
+    getAllRecipes()
+      .then((recipes) => {
+        if (!active) return;
+        setCatalog(recipes);
+        if (initialDish) {
+          const exact = recipes.find(
+            (recipe) => recipe.name.toLowerCase() === initialDish.toLowerCase()
+          );
+          if (exact) {
+            setSelectedRecipe(exact);
+            setPeopleText(String(exact.serving_size));
+            setSearchOpen(false);
           }
-        })
-        .catch(() => {
-          if (active) {
-            setResults([]);
-            setSearchError(true);
-          }
-        })
-        .finally(() => {
-          if (active) setSearching(false);
-        });
-    }, query.trim() ? 300 : 0);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setCatalog([]);
+          setSearchError(true);
+        }
+      })
+      .finally(() => {
+        if (active) setSearching(false);
+      });
+
     return () => {
       active = false;
-      window.clearTimeout(timer);
     };
-  }, [query, initialDish, selectedRecipe]);
+  }, [initialDish]);
 
   function chooseRecipe(recipe: Recipe) {
     setSelectedRecipe(recipe);

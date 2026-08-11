@@ -12,7 +12,6 @@ import { SuggestRecipeCard } from "@/components/suggest-recipe-card";
 import { EmptyState } from "@/components/empty-state";
 import { RecipeGridSkeleton } from "@/components/loading-skeletons";
 import { Badge } from "@/components/ui/badge";
-import { AIStatusBanner } from "@/components/ai-status-banner";
 import { getErrorMessage } from "@/lib/api-client";
 import { getAISuggestions } from "@/services/ai";
 import { recommendRecipes } from "@/services/recommend";
@@ -98,15 +97,11 @@ export default function SuggestPage() {
           </div>
         </motion.div>
 
-        <div className="mt-6">
-          <AIStatusBanner />
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="mt-6 max-w-xl"
+          className="mt-8 max-w-xl"
         >
           <div className="card-premium p-4 sm:p-5">
             <IngredientInputTags value={ingredients} onChange={setIngredients} />

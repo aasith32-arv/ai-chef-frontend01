@@ -7,7 +7,7 @@ import CalculatePage from "./page";
 import type { Recipe } from "@/types/api";
 
 const mocks = vi.hoisted(() => ({
-  getRecipes: vi.fn(),
+  getAllRecipes: vi.fn(),
   calculate: vi.fn(),
   addShoppingItems: vi.fn(),
   getSubstitutions: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("next/image", () => ({
   default: ({ alt }: { alt: string }) => <div role="img" aria-label={alt} />,
 }));
-vi.mock("@/services/recipes", () => ({ getRecipes: mocks.getRecipes }));
+vi.mock("@/services/recipes", () => ({ getAllRecipes: mocks.getAllRecipes }));
 vi.mock("@/services/calculator", () => ({
   calculateQuantities: mocks.calculate,
 }));
@@ -146,10 +146,7 @@ async function loadAndSelectRecipe() {
 describe("Calculate page", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true, toFake: ["setTimeout", "clearTimeout"] });
-    mocks.getRecipes.mockReset().mockResolvedValue({
-      items: [recipe],
-      meta: { page: 1, per_page: 8, total: 1, pages: 1, has_next: false, has_prev: false },
-    });
+    mocks.getAllRecipes.mockReset().mockResolvedValue([recipe]);
     mocks.calculate.mockReset().mockResolvedValue({
       recipe: recipe.name,
       people: 50,
@@ -181,6 +178,7 @@ describe("Calculate page", () => {
 
   it("renders the simple calculator without technical provider status", async () => {
     render(<CalculatePage />);
+    expect(await screen.findByRole("option", { name: /Hyderabadi Chicken Biryani/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Ingredient Calculator" })).toBeInTheDocument();
     expect(screen.queryByText(/Gemini|OpenAI|API connected|provider=/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Calculate Ingredients" })).toBeDisabled();
@@ -188,14 +186,27 @@ describe("Calculate page", () => {
 
   it("searches and selects a catalog recipe with its real metadata", async () => {
     render(<CalculatePage />);
+    expect(await screen.findByRole("option", { name: /Hyderabadi Chicken Biryani/i })).toBeInTheDocument();
     const search = screen.getByRole("combobox", { name: "Search recipes…" });
     fireEvent.change(search, { target: { value: "Hyderabadi" } });
-    await act(async () => vi.advanceTimersByTime(300));
-    expect(mocks.getRecipes).toHaveBeenLastCalledWith({ search: "Hyderabadi", page: 1, per_page: 8 });
+    expect(mocks.getAllRecipes).toHaveBeenCalledTimes(1);
     fireEvent.click(await screen.findByRole("option", { name: /Hyderabadi Chicken Biryani/i }));
     expect(screen.getByText("Indian • Hyderabad")).toBeInTheDocument();
     expect(screen.getByText(/Original recipe.*4 people/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Calculate Ingredients" })).toBeEnabled();
+  });
+
+  it("shows the complete catalog whenever the recipe search is focused", async () => {
+    const secondRecipe = { ...recipe, id: 43, name: "Jaffna Crab Curry" };
+    mocks.getAllRecipes.mockResolvedValueOnce([recipe, secondRecipe]);
+    render(<CalculatePage />);
+
+    expect(await screen.findByRole("option", { name: /Jaffna Crab Curry/i })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("option", { name: /Hyderabadi Chicken Biryani/i }));
+    fireEvent.focus(screen.getByRole("combobox", { name: "Search recipes…" }));
+
+    expect(screen.getByRole("option", { name: /Hyderabadi Chicken Biryani/i })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /Jaffna Crab Curry/i })).toBeInTheDocument();
   });
 
   it("supports direct input, step buttons, presets, and invalid validation", async () => {

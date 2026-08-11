@@ -13,6 +13,10 @@ import { GuestStepper } from "@/components/recipe/guest-stepper";
 import { NutritionStrip } from "@/components/recipe/nutrition-strip";
 import { CookingTimer } from "@/components/recipe/cooking-timer";
 import { CookingIntelligencePanel } from "@/components/cooking-intelligence/cooking-intelligence-panel";
+import {
+  SubstitutionAssistant,
+  type AppliedSubstitution,
+} from "@/components/calculate/substitution-assistant";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,6 +42,9 @@ export function RecipeDetailClient({ recipe, initialServings }: RecipeDetailClie
   );
   const [translatedSteps, setTranslatedSteps] = useState(recipe.steps ?? []);
   const [translating, setTranslating] = useState(false);
+  const [appliedSubstitutions, setAppliedSubstitutions] = useState<
+    Record<string, AppliedSubstitution>
+  >({});
 
   useEffect(() => {
     trackRecipeView(recipe);
@@ -56,6 +63,21 @@ export function RecipeDetailClient({ recipe, initialServings }: RecipeDetailClie
   const [ingredients, setIngredients] = useState(baseIngredients);
   const displayIngredients =
     locale === "en" ? baseIngredients : ingredients;
+  const substitutedIngredients = useMemo(
+    () =>
+      displayIngredients.map((item, index) => {
+        const originalName = baseIngredients[index]?.name || item.name;
+        const applied = appliedSubstitutions[originalName.toLowerCase()];
+        return applied
+          ? {
+              ...item,
+              name: applied.substitute,
+              substitutedFor: item.name,
+            }
+          : item;
+      }),
+    [displayIngredients, baseIngredients, appliedSubstitutions]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -130,14 +152,14 @@ export function RecipeDetailClient({ recipe, initialServings }: RecipeDetailClie
 
   function handleAddToList() {
     addShoppingItems(
-      displayIngredients.map((item) => ({
+      substitutedIngredients.map((item) => ({
         name: item.name,
         quantity: item.displayQuantity || String(item.quantity),
         unit: item.unit,
         dish: displayRecipe.name,
       }))
     );
-    toast.success(`Added ${displayIngredients.length} items to shopping list`);
+    toast.success(`Added ${substitutedIngredients.length} items to shopping list`);
   }
 
   return (
@@ -208,12 +230,28 @@ export function RecipeDetailClient({ recipe, initialServings }: RecipeDetailClie
         </TabsContent>
         <TabsContent value="recipe-basics">
           <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <IngredientList
-                ingredients={displayIngredients}
-                title={t("recipe.ingredients")}
+            <div className="space-y-6">
+              <div className="grid gap-6 lg:grid-cols-2">
+                <IngredientList
+                  ingredients={substitutedIngredients}
+                  title={t("recipe.ingredients")}
+                />
+                <StepsAccordion steps={translatedSteps} />
+              </div>
+              <SubstitutionAssistant
+                key={`${recipe.id}-${servings}`}
+                recipeId={recipe.id}
+                servings={servings}
+                ingredients={recipe.ingredients}
+                scaledIngredients={baseIngredients}
+                onApply={(substitution) => {
+                  setAppliedSubstitutions((current) => ({
+                    ...current,
+                    [substitution.originalIngredient.toLowerCase()]: substitution,
+                  }));
+                  toast.success(t("substitution.applied"));
+                }}
               />
-              <StepsAccordion steps={translatedSteps} />
             </div>
             <CookingTimer defaultMinutes={20 + (recipe.id % 5) * 5} />
           </div>

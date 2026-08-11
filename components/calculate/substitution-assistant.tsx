@@ -172,7 +172,7 @@ export function SubstitutionAssistant({
 
         {result && result.options.length > 0 && (
           <div className="space-y-3">
-            {result.options.slice(0, 3).map((option, index) => (
+            {result.options.map((option, index) => (
               <article key={option.substitution} className="rounded-2xl border border-border bg-surface/50 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>

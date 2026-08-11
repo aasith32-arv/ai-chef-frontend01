@@ -1,7 +1,7 @@
 import type { ScaledIngredient } from "@/lib/ingredient-calculator";
 
 type IngredientListProps = {
-  ingredients: ScaledIngredient[];
+  ingredients: Array<ScaledIngredient & { substitutedFor?: string }>;
   title?: string;
 };
 
@@ -22,7 +22,14 @@ export function IngredientList({
               <span className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                 {index + 1}
               </span>
-              {item.name}
+              <span>
+                {item.name}
+                {item.substitutedFor && (
+                  <span className="mt-0.5 block text-xs font-normal text-muted-foreground">
+                    Replaces {item.substitutedFor}
+                  </span>
+                )}
+              </span>
             </span>
             <span className="text-base font-extrabold tabular-nums text-primary">
               {item.displayQuantity}
