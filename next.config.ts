@@ -22,7 +22,9 @@ function backendOrigin() {
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: path.resolve(__dirname),
+    // When dependencies are hoisted to the workspace root, point Turbopack
+    // at the workspace root so it can resolve packages like `next`.
+    root: path.resolve(__dirname, ".."),
   },
   images: {
     remotePatterns: [

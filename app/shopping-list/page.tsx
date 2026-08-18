@@ -92,7 +92,7 @@ export default function ShoppingListPage() {
               Your market trip
             </p>
             <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Shopping bill
+              Shopping list
             </h1>
           </div>
         </div>
